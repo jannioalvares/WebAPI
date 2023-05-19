@@ -24,8 +24,8 @@ namespace WebAPI.Model
         public string PhoneNumber { get; set; }
 
         //Cardinality
-        public Education Education { get; set; }
-        public Account Account { get; set; }
-        public ICollection<Booking> Bookings { get; set; }
+        public Education? Education { get; set; }
+        public Account? Account { get; set; }
+        public ICollection<Booking>? Bookings { get; set; }
     }
 }

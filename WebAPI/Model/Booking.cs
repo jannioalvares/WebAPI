@@ -20,7 +20,7 @@ namespace WebAPI.Model
         [Column("employee_guid")]
         public Guid EmployeeGuid { get; set; }
 
-        public Employee Employee { get; set; }
-        public Room Room { get; set; }
+        public Employee? Employee { get; set; }
+        public Room? Room { get; set; }
     }
 }

@@ -9,6 +9,6 @@ namespace WebAPI.Model
         [Column("name", TypeName = "nvarchar(255)")]
         public string Name { get; set; }
 
-        public ICollection<AccountRole> AccountRole { get; set;}
+        public ICollection<AccountRole>? AccountRole { get; set;}
     }
 }
