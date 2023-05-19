@@ -8,8 +8,8 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class RoomController : ControllerBase
     {
-        private readonly IRepository<Room> _roomRepository;
-        public RoomController(IRepository<Room> roomRepository)
+        private readonly IGenericRepository<Room> _roomRepository;
+        public RoomController(IGenericRepository<Room> roomRepository)
         {
             _roomRepository = roomRepository;
         }

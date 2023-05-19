@@ -6,7 +6,7 @@ using WebAPI.Context;
 
 namespace WebAPI.Repositories
 {
-    public class GenericRepository<Entity> : IRepository<Entity> where Entity : class
+    public class GenericRepository<Entity> : IGenericRepository<Entity> where Entity : class
     {
         private readonly BookingManagementDbContext _context;
 

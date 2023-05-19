@@ -10,8 +10,8 @@ namespace WebAPI.Controllers
     public class BookingController : ControllerBase
     {
 
-        private readonly IRepository<Booking> _bookingRepository;
-        public BookingController(IRepository<Booking> bookingRepository)
+        private readonly IGenericRepository<Booking> _bookingRepository;
+        public BookingController(IGenericRepository<Booking> bookingRepository)
         {
             _bookingRepository = bookingRepository;
         }

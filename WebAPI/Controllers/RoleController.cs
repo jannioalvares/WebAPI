@@ -10,8 +10,8 @@ namespace WebAPI.Controllers
     public class RoleController : ControllerBase
     {
 
-        private readonly IRepository<Role> _roleRepository;
-        public RoleController(IRepository<Role> roleRepository)
+        private readonly IGenericRepository<Role> _roleRepository;
+        public RoleController(IGenericRepository<Role> roleRepository)
         {
             _roleRepository = roleRepository;
         }

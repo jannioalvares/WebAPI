@@ -9,8 +9,8 @@ namespace WebAPI.Controllers
     public class AccountRoleController : ControllerBase
     {
 
-        private readonly IRepository<AccountRole> _accountRoleRepository;
-        public AccountRoleController(IRepository<AccountRole> accountRoleRepository)
+        private readonly IGenericRepository<AccountRole> _accountRoleRepository;
+        public AccountRoleController(IGenericRepository<AccountRole> accountRoleRepository)
         {
             _accountRoleRepository = accountRoleRepository;
         }

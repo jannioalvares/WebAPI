@@ -20,23 +20,14 @@ namespace WebAPI
 
             builder.Services.AddDbContext<BookingManagementDbContext>(options => options.UseSqlServer(connectionString));
 
-            /*builder.Services.AddScoped<IUniversityRepository, UniversityRepository>();
-            builder.Services.AddScoped<IEducationRepository, EducationRepository>();
-            builder.Services.AddScoped<IRoomRepository, RoomRepository>();
-            builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-            builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-            builder.Services.AddScoped<IAccountRoleRepository, AccountRoleRepository>();
-            builder.Services.AddScoped<IBookingRepository, BookingRepository>();*/
-
             //using generic
-            builder.Services.AddScoped<IRepository<Account>, GenericRepository<Account>>();
-            builder.Services.AddScoped<IRepository<University>, GenericRepository<University>>();
-            builder.Services.AddScoped<IRepository<Education>, GenericRepository<Education>>();
-            builder.Services.AddScoped<IRepository<Room>, GenericRepository<Room>>();
-            builder.Services.AddScoped<IRepository<Role>, GenericRepository<Role>>();
-            builder.Services.AddScoped<IRepository<Employee>, GenericRepository<Employee>>();
-            builder.Services.AddScoped<IRepository<AccountRole>, GenericRepository<AccountRole>>();
+            builder.Services.AddScoped<IGenericRepository<Account>, GenericRepository<Account>>();
+            builder.Services.AddScoped<IGenericRepository<University>, GenericRepository<University>>();
+            builder.Services.AddScoped<IGenericRepository<Education>, GenericRepository<Education>>();
+            builder.Services.AddScoped<IGenericRepository<Room>, GenericRepository<Room>>();
+            builder.Services.AddScoped<IGenericRepository<Role>, GenericRepository<Role>>();
+            builder.Services.AddScoped<IGenericRepository<Employee>, GenericRepository<Employee>>();
+            builder.Services.AddScoped<IGenericRepository<AccountRole>, GenericRepository<AccountRole>>();
 
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

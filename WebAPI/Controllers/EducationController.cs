@@ -9,8 +9,8 @@ namespace WebAPI.Controllers
     public class EducationController : ControllerBase
     {
 
-        private readonly IRepository<Education> _educationRepository;
-        public EducationController(IRepository<Education> educationRepository)
+        private readonly IGenericRepository<Education> _educationRepository;
+        public EducationController(IGenericRepository<Education> educationRepository)
         {
             _educationRepository = educationRepository;
         }
