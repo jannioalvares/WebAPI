@@ -8,8 +8,9 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class EducationController : ControllerBase
     {
-        private readonly IEducationRepository _educationRepository;
-        public EducationController(IEducationRepository educationRepository)
+
+        private readonly IRepository<Education> _educationRepository;
+        public EducationController(IRepository<Education> educationRepository)
         {
             _educationRepository = educationRepository;
         }

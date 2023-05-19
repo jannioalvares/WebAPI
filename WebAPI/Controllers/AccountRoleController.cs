@@ -8,16 +8,17 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class AccountRoleController : ControllerBase
     {
-        private readonly IAccountRoleRepository _accountroleRepository;
-        public AccountRoleController(IAccountRoleRepository accountroleRepository)
+
+        private readonly IRepository<AccountRole> _accountRoleRepository;
+        public AccountRoleController(IRepository<AccountRole> accountRoleRepository)
         {
-            _accountroleRepository = accountroleRepository;
+            _accountRoleRepository = accountRoleRepository;
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var accountroles = _accountroleRepository.GetAll();
+            var accountroles = _accountRoleRepository.GetAll();
             if (!accountroles.Any())
             {
                 return NotFound();
@@ -29,7 +30,7 @@ namespace WebAPI.Controllers
         [HttpGet("{guid}")]
         public IActionResult GetByGuid(Guid guid)
         {
-            var accountrole = _accountroleRepository.GetByGuid(guid);
+            var accountrole = _accountRoleRepository.GetByGuid(guid);
             if (accountrole is null)
             {
                 return NotFound();
@@ -41,7 +42,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         public IActionResult Create(AccountRole accountrole)
         {
-            var result = _accountroleRepository.Create(accountrole);
+            var result = _accountRoleRepository.Create(accountrole);
             if (result is null)
             {
                 return BadRequest();
@@ -53,7 +54,7 @@ namespace WebAPI.Controllers
         [HttpPut]
         public IActionResult Update(AccountRole accountrole)
         {
-            var isUpdated = _accountroleRepository.Update(accountrole);
+            var isUpdated = _accountRoleRepository.Update(accountrole);
             if (!isUpdated)
             {
                 return BadRequest();
@@ -65,7 +66,7 @@ namespace WebAPI.Controllers
         [HttpDelete("{guid}")]
         public IActionResult Delete(Guid guid)
         {
-            var isDeleted = _accountroleRepository.Delete(guid);
+            var isDeleted = _accountRoleRepository.Delete(guid);
             if (!isDeleted)
             {
                 return BadRequest();

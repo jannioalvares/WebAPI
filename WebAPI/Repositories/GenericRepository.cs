@@ -1,36 +1,39 @@
-﻿using WebAPI.Context;
+﻿using WebAPI.Model;
 using WebAPI.Contracts;
-using WebAPI.Model;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using WebAPI.Context;
 
 namespace WebAPI.Repositories
 {
-    public class UniversityRepository : IUniversityRepository
+    public class GenericRepository<Entity> : IRepository<Entity> where Entity : class
     {
         private readonly BookingManagementDbContext _context;
-        public UniversityRepository(BookingManagementDbContext context)
+
+        public GenericRepository(BookingManagementDbContext context)
         {
             _context = context;
         }
 
-        public University Create(University university)
+        public Entity Create(Entity entity)
         {
             try
             {
-                _context.Set<University>().Add(university);
+                _context.Set<Entity>().Add(entity);
                 _context.SaveChanges();
-                return university;
+                return entity;
             }
             catch
             {
-                return new University();
+                return null;
             }
         }
 
-        public bool Update(University university)
+        public bool Update(Entity entity)
         {
             try
             {
-                _context.Set<University>().Update(university);
+                _context.Set<Entity>().Update(entity);
                 _context.SaveChanges();
                 return true;
             }
@@ -44,13 +47,13 @@ namespace WebAPI.Repositories
         {
             try
             {
-                var university = GetByGuid(guid);
-                if (university == null)
+                var entity = GetByGuid(guid);
+                if (entity == null)
                 {
                     return false;
                 }
 
-                _context.Set<University>().Remove(university);
+                _context.Set<Entity>().Remove(entity);
                 _context.SaveChanges();
                 return true;
             }
@@ -60,14 +63,14 @@ namespace WebAPI.Repositories
             }
         }
 
-        public IEnumerable<University> GetAll()
+        public IEnumerable<Entity> GetAll()
         {
-            return _context.Set<University>().ToList();
+            return _context.Set<Entity>().ToList();
         }
 
-        public University? GetByGuid(Guid guid)
+        public Entity GetByGuid(Guid guid)
         {
-            return _context.Set<University>().Find(guid);
+            return _context.Set<Entity>().Find(guid);
         }
     }
 }

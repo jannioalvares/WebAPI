@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebAPI.Contracts;
 using WebAPI.Model;
+using WebAPI.Repositories;
 
 namespace WebAPI.Controllers
 {
@@ -8,8 +9,9 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class EmployeeController : ControllerBase
     {
-        private readonly IEmployeeRepository _employeeRepository;
-        public EmployeeController(IEmployeeRepository employeeRepository)
+
+        private readonly IRepository<Employee> _employeeRepository;
+        public EmployeeController(IRepository<Employee> employeeRepository)
         {
             _employeeRepository = employeeRepository;
         }
