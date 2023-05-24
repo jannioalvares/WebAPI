@@ -39,47 +39,6 @@ namespace WebAPI.Controllers
 
         }
 
-        [HttpGet("GetRoomByDate")]
-        public IActionResult GetByGuidWithEducation(DateTime dateNow)
-        {
-            try
-            {
-                var bookings = _bookingRepository.GetByDate(dateNow);
-                if (bookings is null)
-                {
-                    return NotFound();
-                }
-                var room = _roomRepository.GetByGuid(bookings.RoomGuid);
-                if (room is null)
-                {
-                    return NotFound();
-                }
-                var employee = _employeeRepository.GetByGuid(bookings.Guid);
-                if (employee is null)
-                {
-                    return NotFound();
-                }
-
-                var data = new
-                {
-                    BookedBy = employee.FirstName+" "+ employee.LastName,
-                    Status = bookings.Status.ToString(),
-                    RoomName = room.Name,
-                    Floor = room.Floor,
-                    Capacity = room.Capacity,
-                    StartDate = bookings.StartDate,
-                    EndDate = bookings.EndDate
-                };
-
-                return Ok(data);
-
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
         [HttpGet("{guid}")]
         public IActionResult GetByGuid(Guid guid)
         {
@@ -93,19 +52,6 @@ namespace WebAPI.Controllers
             return Ok(data);
         }
 
-        [HttpGet("GetByDate")]
-        public IActionResult GetByDate(DateTime StartDate)
-        {
-            var booked = _bookingRepository.GetByDate(StartDate);
-            if (booked is null)
-            {
-                return NotFound();
-            }
-
-            var data = _mapper.Map(booked);
-            return Ok(data);
-        }
-
         [HttpPost]
         public IActionResult Create(BookingVM bookingVM)
         {
@@ -113,7 +59,7 @@ namespace WebAPI.Controllers
             var result = _bookingRepository.Create(bookingConverted);
             if (result is null)
             {
-                return NotFound();
+                return BadRequest();
             }
             return Ok(result);
         }

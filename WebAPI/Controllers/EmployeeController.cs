@@ -3,6 +3,7 @@ using System;
 using WebAPI.Contracts;
 using WebAPI.Model;
 using WebAPI.Repositories;
+using WebAPI.ViewModels.Bookings;
 using WebAPI.ViewModels.Educations;
 using WebAPI.ViewModels.Employees;
 using WebAPI.ViewModels.Universities;
@@ -43,27 +44,14 @@ namespace WebAPI.Controllers
         [HttpGet]
         public IActionResult GetEmployee ()
         {
-            var masterEmployees = _employeeRepository.GetAll();
-            if (!masterEmployees.Any())
+            var employees = _employeeRepository.GetAll();
+            if (!employees.Any())
             {
                 return NotFound();
             }
 
-            return Ok(masterEmployees);
-        }
-
-
-        [HttpGet("GetMasterEmployeeByGuid")]
-        public IActionResult GetEmployeeById(Guid guid)
-        {
-
-            var employees = _employeeRepository.GetMasterEmployeeByGuid(guid);
-            if (employees == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(employees);
+            var data = employees.Select(_mapper.Map).ToList();
+            return Ok(data);
         }
 
         [HttpGet("{guid}/GetByGuid")]
@@ -80,9 +68,10 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Employee employee)
+        public IActionResult Create(EmployeeVM employeeVM)
         {
-            var result = _employeeRepository.Create(employee);
+            var employeeConverted = _mapper.Map(employeeVM);
+            var result = _employeeRepository.Create(employeeConverted);
             if (result is null)
             {
                 return BadRequest();

@@ -34,26 +34,29 @@ namespace WebAPI.Repositories
 
             foreach (var employee in employees)
             {
-                var education = educations.FirstOrDefault(e => e.Guid == employee.Guid);
-                var university = universities.FirstOrDefault(u => u.Guid == education.UniversityGuid);
+                var education = educations.FirstOrDefault(e => e.Guid == employee?.Guid);
+                var university = universities.FirstOrDefault(u => u.Guid == education?.UniversityGuid);
 
-                var employeeEducation = new MasterEmployeeVM
+                if (education != null && university != null)
                 {
-                    Guid = employee.Guid,
-                    NIK = employee.Nik,
-                    FullName = employee.FirstName + " " + employee.LastName,
-                    BirthDate = employee.BirthDate,
-                    Gender = employee.Gender.ToString(),
-                    HiringDate = employee.HiringDate,
-                    Email = employee.Email,
-                    PhoneNumber = employee.PhoneNumber,
-                    Major = education.Major,
-                    Degree = education.Degree,
-                    GPA = education.Gpa,
-                    UniversityName = university.Name
-                };
+                    var employeeEducation = new MasterEmployeeVM
+                    {
+                        Guid = employee.Guid,
+                        NIK = employee.Nik,
+                        FullName = employee.FirstName + " " + employee.LastName,
+                        BirthDate = employee.BirthDate,
+                        Gender = employee.Gender.ToString(),
+                        HiringDate = employee.HiringDate,
+                        Email = employee.Email,
+                        PhoneNumber = employee.PhoneNumber,
+                        Major = education.Major,
+                        Degree = education.Degree,
+                        GPA = education.Gpa,
+                        UniversityName = university.Name
+                    };
 
-                employeeEducations.Add(employeeEducation);
+                    employeeEducations.Add(employeeEducation);
+                }
             }
 
             return employeeEducations;

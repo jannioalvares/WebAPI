@@ -50,6 +50,7 @@ namespace WebAPI.Controllers
         public IActionResult Create(EducationVM educationVM)
         {
             var educationConverted = _mapper.Map(educationVM);
+
             var result = _educationRepository.Create(educationConverted);
             if (result is null)
             {

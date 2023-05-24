@@ -29,7 +29,7 @@ namespace WebAPI.Repositories
 
             foreach (var room in rooms)
             {
-                var booking = bookings.FirstOrDefault(b => b.RoomGuid == room.Guid && b.StartDate <= dateTime && b.EndDate >= dateTime);
+                var booking = bookings.FirstOrDefault(b => b.RoomGuid == room?.Guid && b.StartDate <= dateTime && b.EndDate >= dateTime);
                 if (booking != null)
                 {
                     var employee = employees.FirstOrDefault(e => e.Guid == booking.EmployeeGuid);
@@ -65,7 +65,7 @@ namespace WebAPI.Repositories
 
             foreach (var room in rooms)
             {
-                var booking = bookings.FirstOrDefault(b => b.RoomGuid == room.Guid && b.StartDate <= currentTime && b.EndDate >= currentTime);
+                var booking = bookings.FirstOrDefault(b => b.RoomGuid == room?.Guid && b.StartDate <= currentTime && b.EndDate >= currentTime);
                 if (booking != null)
                 {
                     var employee = employees.FirstOrDefault(e => e.Guid == booking.EmployeeGuid);
