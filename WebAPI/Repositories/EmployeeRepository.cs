@@ -60,7 +60,7 @@ namespace WebAPI.Repositories
         }
 
 
-        MasterEmployeeVM? IEmployeeRepository.GetEmployeeById(Guid guid)
+        MasterEmployeeVM? IEmployeeRepository.GetMasterEmployeeByGuid(Guid guid)
         {
             var employee = GetByGuid(guid);
             var education = _educationRepository.GetByGuid(guid);
@@ -83,31 +83,6 @@ namespace WebAPI.Repositories
             };
 
             return data;         
-        }
-
-        public object GetEmployeeAll(Guid guid)
-        {
-            var employee = GetByGuid(guid);
-            var education = _educationRepository.GetByGuid(guid);
-            var university = _universityRepository.GetByGuid(education.UniversityGuid);
-
-            var data = new
-            {
-                Guid = employee.Guid,
-                NIK = employee.Nik,
-                Fullname = employee.FirstName + " " + employee.LastName,
-                BirthDate = employee.BirthDate,
-                Gender = employee.Gender.ToString(),
-                HiringDate = employee.HiringDate,
-                Email = employee.Email,
-                PhoneNumber = employee.PhoneNumber,
-                Major = education.Major,
-                Degree = education.Degree,
-                Gpa = education.Gpa,
-                University = university.Name
-            };
-
-            return data;
         }
     }
 }

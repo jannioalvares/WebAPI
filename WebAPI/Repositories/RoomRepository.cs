@@ -43,6 +43,7 @@ namespace WebAPI.Repositories
                         Capacity = room.Capacity,
                         StartDate = booking.StartDate,
                         EndDate = booking.EndDate,
+
                     };
 
                     usedRooms.Add(result);
@@ -79,32 +80,6 @@ namespace WebAPI.Repositories
 
                     usedRooms.Add(result);
                 }
-            }
-            return usedRooms;
-        }
-
-        public IEnumerable<RoomUsedVM> GetCurrentlyUsed()
-        {
-            var rooms = GetAll();
-            var bookings = _bookingRepository.GetAll();
-            var employees = _employeeRepository.GetAll();
-
-            var usedRooms = new List<RoomUsedVM>();
-
-            foreach (var room in rooms)
-            {
-                var booking = bookings.FirstOrDefault(b => b.RoomGuid == room.Guid);
-                var employee = employees.FirstOrDefault(e => e.Guid == booking?.EmployeeGuid);
-
-                var result = new RoomUsedVM
-                {
-                    RoomName = room.Name,
-                    Status = booking.Status.ToString(),
-                    Floor = room.Floor,
-                    BookedBy = employee.FirstName + " " + employee?.LastName,
-                };
-
-                usedRooms.Add(result);
             }
             return usedRooms;
         }

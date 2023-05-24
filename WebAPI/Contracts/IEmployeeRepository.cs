@@ -9,10 +9,7 @@ namespace WebAPI.Contracts
     {
         IEnumerable<MasterEmployeeVM> GetAllMasterEmployee();
 
-        MasterEmployeeVM? GetEmployeeById(Guid guid);
-
-        object GetEmployeeAll(Guid guid);
-
+        MasterEmployeeVM? GetMasterEmployeeByGuid(Guid guid);
 
     }
 }

@@ -53,11 +53,11 @@ namespace WebAPI.Controllers
         }
 
 
-        [HttpGet("GetAllById")]
+        [HttpGet("GetMasterEmployeeByGuid")]
         public IActionResult GetEmployeeById(Guid guid)
         {
 
-            var employees = _employeeRepository.GetEmployeeById(guid);
+            var employees = _employeeRepository.GetMasterEmployeeByGuid(guid);
             if (employees == null)
             {
                 return NotFound();
