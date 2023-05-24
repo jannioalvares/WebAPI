@@ -41,6 +41,18 @@ namespace WebAPI.Controllers
             return Ok(masterEmployees);
         }
 
+        [HttpGet("GetMasterEmployeeByGuid")]
+        public IActionResult GetMasterEmployeeByGuid(Guid guid)
+        {
+            var masterEmployees = _employeeRepository.GetMasterEmployeeByGuid(guid);
+            if (masterEmployees is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(masterEmployees);
+        }
+
         [HttpGet]
         public IActionResult GetEmployee ()
         {
