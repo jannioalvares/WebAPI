@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebAPI.Contracts;
 using WebAPI.Model;
+using WebAPI.Repositories;
+using WebAPI.ViewModels.AccountRoles;
 
 namespace WebAPI.Controllers
 {
@@ -9,40 +11,45 @@ namespace WebAPI.Controllers
     public class AccountRoleController : ControllerBase
     {
 
-        private readonly IGenericRepository<AccountRole> _accountRoleRepository;
-        public AccountRoleController(IGenericRepository<AccountRole> accountRoleRepository)
+        private readonly IAccountRoleRepository _accountroleRepository;
+        private readonly IMapper<AccountRole, AccountRoleVM> _mapper;
+        public AccountRoleController(IAccountRoleRepository accountRoleRepository, IMapper<AccountRole, AccountRoleVM> mapper)
         {
-            _accountRoleRepository = accountRoleRepository;
+            _accountroleRepository = accountRoleRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var accountroles = _accountRoleRepository.GetAll();
+            var accountroles = _accountroleRepository.GetAll();
             if (!accountroles.Any())
             {
                 return NotFound();
             }
 
-            return Ok(accountroles);
+            var data = accountroles.Select(_mapper.Map).ToList();
+            return Ok(data);
         }
 
         [HttpGet("{guid}")]
         public IActionResult GetByGuid(Guid guid)
         {
-            var accountrole = _accountRoleRepository.GetByGuid(guid);
+            var accountrole = _accountroleRepository.GetByGuid(guid);
             if (accountrole is null)
             {
                 return NotFound();
             }
 
+            var data = _mapper.Map(accountrole);
             return Ok(accountrole);
         }
 
         [HttpPost]
-        public IActionResult Create(AccountRole accountrole)
+        public IActionResult Create(AccountRoleVM accountroleVM)
         {
-            var result = _accountRoleRepository.Create(accountrole);
+            var accountroleConverted = _mapper.Map(accountroleVM);
+            var result = _accountroleRepository.Create(accountroleConverted);
             if (result is null)
             {
                 return BadRequest();
@@ -52,9 +59,10 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut]
-        public IActionResult Update(AccountRole accountrole)
+        public IActionResult Update(AccountRoleVM accountroleVM)
         {
-            var isUpdated = _accountRoleRepository.Update(accountrole);
+            var accountroleConverted = _mapper.Map(accountroleVM);
+            var isUpdated = _accountroleRepository.Update(accountroleConverted);
             if (!isUpdated)
             {
                 return BadRequest();
@@ -66,7 +74,7 @@ namespace WebAPI.Controllers
         [HttpDelete("{guid}")]
         public IActionResult Delete(Guid guid)
         {
-            var isDeleted = _accountRoleRepository.Delete(guid);
+            var isDeleted = _accountroleRepository.Delete(guid);
             if (!isDeleted)
             {
                 return BadRequest();

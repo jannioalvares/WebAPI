@@ -3,6 +3,7 @@ using WebAPI.Context;
 using WebAPI.Contracts;
 using WebAPI.Model;
 using WebAPI.Repositories;
+using WebAPI.Utility;
 
 namespace WebAPI
 {
@@ -20,14 +21,17 @@ namespace WebAPI
 
             builder.Services.AddDbContext<BookingManagementDbContext>(options => options.UseSqlServer(connectionString));
 
-            //using generic
-            builder.Services.AddScoped<IGenericRepository<Account>, GenericRepository<Account>>();
-            builder.Services.AddScoped<IGenericRepository<University>, GenericRepository<University>>();
-            builder.Services.AddScoped<IGenericRepository<Education>, GenericRepository<Education>>();
-            builder.Services.AddScoped<IGenericRepository<Room>, GenericRepository<Room>>();
-            builder.Services.AddScoped<IGenericRepository<Role>, GenericRepository<Role>>();
-            builder.Services.AddScoped<IGenericRepository<Employee>, GenericRepository<Employee>>();
-            builder.Services.AddScoped<IGenericRepository<AccountRole>, GenericRepository<AccountRole>>();
+
+            builder.Services.AddScoped<IUniversityRepository, UniversityRepository>();
+            builder.Services.AddScoped<IEducationRepository, EducationRepository>();
+            builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+            builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+            builder.Services.AddScoped<IAccountRoleRepository, AccountRoleRepository>();
+            builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+
+            builder.Services.AddSingleton(typeof(IMapper<,>), typeof(Mapper<,>));
 
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

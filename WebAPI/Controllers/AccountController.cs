@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 using WebAPI.Contracts;
 using WebAPI.Model;
 using WebAPI.Repositories;
+using WebAPI.ViewModels.Accounts;
 
 namespace WebAPI.Controllers
 {
@@ -9,22 +11,26 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class AccountController : ControllerBase
     {
-        private readonly IGenericRepository<Account> _accountRepository;
-        public AccountController(IGenericRepository<Account> accountRepository)
+        private readonly IAccountRepository _accountRepository;
+        private readonly IMapper<Account, AccountVM> _mapper;
+        public AccountController(IAccountRepository accountRepository, IMapper<Account, AccountVM> mapper)
         {
             _accountRepository = accountRepository;
+            _mapper = mapper;
+
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var account = _accountRepository.GetAll();
-            if (!account.Any())
+            var accounts = _accountRepository.GetAll();
+            if (!accounts.Any())
             {
                 return NotFound();
             }
 
-            return Ok(account);
+            var data = accounts.Select(_mapper.Map).ToList();
+            return Ok(data);
         }
 
         [HttpGet("{guid}")]
@@ -36,13 +42,15 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
 
-            return Ok(account);
+            var data = _mapper.Map(account);
+            return Ok(data);
         }
 
         [HttpPost]
-        public IActionResult Create(Account account)
+        public IActionResult Create(AccountVM accountVM)
         {
-            var result = _accountRepository.Create(account);
+            var accountConverted = _mapper.Map(accountVM);
+            var result = _accountRepository.Create(accountConverted);
             if (result is null)
             {
                 return BadRequest();
@@ -52,9 +60,10 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut]
-        public IActionResult Update(Account account)
+        public IActionResult Update(AccountVM accountVM)
         {
-            var isUpdated = _accountRepository.Update(account);
+            var accountConverted = _mapper.Map(accountVM);
+            var isUpdated = _accountRepository.Update(accountConverted);
             if (!isUpdated)
             {
                 return BadRequest();

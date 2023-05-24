@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using WebAPI.Contracts;
 using WebAPI.Model;
 using WebAPI.Repositories;
+using WebAPI.ViewModels.Educations;
+using WebAPI.ViewModels.Employees;
+using WebAPI.ViewModels.Universities;
 
 namespace WebAPI.Controllers
 {
@@ -9,18 +13,52 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class EmployeeController : ControllerBase
     {
-
-        private readonly IGenericRepository<Employee> _employeeRepository;
-        public EmployeeController(IGenericRepository<Employee> employeeRepository)
+        private readonly IEmployeeRepository _employeeRepository;
+        private readonly IEducationRepository _educationRepository;
+        private readonly IUniversityRepository _universityRepository;
+        private readonly IMapper<Employee, EmployeeVM> _mapper;
+        public EmployeeController(IEmployeeRepository employeeRepository, 
+            IEducationRepository educationRepository, 
+            IUniversityRepository universityRepository, 
+            IMapper<Employee, EmployeeVM> mapper) 
         {
             _employeeRepository = employeeRepository;
+            _educationRepository = educationRepository;
+            _universityRepository = universityRepository;
+            _mapper = mapper;
+        }
+
+        [HttpGet("GetAllMasterEmployee")]
+        public IActionResult GetAll()
+        {
+            var masterEmployees = _employeeRepository.GetAllMasterEmployee();
+            if (!masterEmployees.Any())
+            {
+                return NotFound();
+            }
+
+            return Ok(masterEmployees);
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetEmployee ()
         {
-            var employees = _employeeRepository.GetAll();
-            if (!employees.Any())
+            var masterEmployees = _employeeRepository.GetAll();
+            if (!masterEmployees.Any())
+            {
+                return NotFound();
+            }
+
+            return Ok(masterEmployees);
+        }
+
+
+        [HttpGet("GetAllById")]
+        public IActionResult GetEmployeeById(Guid guid)
+        {
+
+            var employees = _employeeRepository.GetEmployeeById(guid);
+            if (employees == null)
             {
                 return NotFound();
             }
@@ -28,7 +66,7 @@ namespace WebAPI.Controllers
             return Ok(employees);
         }
 
-        [HttpGet("{guid}")]
+        [HttpGet("{guid}/GetByGuid")]
         public IActionResult GetByGuid(Guid guid)
         {
             var employee = _employeeRepository.GetByGuid(guid);
@@ -37,7 +75,8 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
 
-            return Ok(employee);
+            var data = _mapper.Map(employee);
+            return Ok(data);
         }
 
         [HttpPost]
@@ -53,9 +92,10 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut]
-        public IActionResult Update(Employee employee)
+        public IActionResult Update(EmployeeVM employeeVM)
         {
-            var isUpdated = _employeeRepository.Update(employee);
+            var employeeConverted = _mapper.Map(employeeVM);
+            var isUpdated = _employeeRepository.Update(employeeConverted);
             if (!isUpdated)
             {
                 return BadRequest();

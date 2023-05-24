@@ -12,7 +12,7 @@ namespace WebAPI.Model
         [Column("end_date")]
         public DateTime EndDate { get; set; }
         [Column("status")]
-        public StatusLevel Status { get; set; }
+        public StatusLevel? Status { get; set; }
         [Column("remarks", TypeName = "nvarchar(255)")]
         public string Remarks { get; set; }
         [Column("room_guid")]

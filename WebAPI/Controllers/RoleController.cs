@@ -2,6 +2,8 @@
 using WebAPI.Contracts;
 using WebAPI.Model;
 using WebAPI.Repositories;
+using WebAPI.ViewModels.Roles;
+using WebAPI.ViewModels.Rooms;
 
 namespace WebAPI.Controllers
 {
@@ -10,10 +12,12 @@ namespace WebAPI.Controllers
     public class RoleController : ControllerBase
     {
 
-        private readonly IGenericRepository<Role> _roleRepository;
-        public RoleController(IGenericRepository<Role> roleRepository)
+        private readonly IRoleRepository _roleRepository;
+        private readonly IMapper<Role, RoleVM> _mapper;
+        public RoleController(IRoleRepository roleRepository, IMapper<Role, RoleVM> mapper)
         {
             _roleRepository = roleRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -25,7 +29,8 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
 
-            return Ok(roles);
+            var data = roles.Select(_mapper.Map).ToList();
+            return Ok(data);
         }
 
         [HttpGet("{guid}")]
@@ -37,13 +42,15 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
 
-            return Ok(role);
+            var data = _mapper.Map(role);
+            return Ok(data);
         }
 
         [HttpPost]
-        public IActionResult Create(Role role)
+        public IActionResult Create(RoleVM roleVM)
         {
-            var result = _roleRepository.Create(role);
+            var roleConverted = _mapper.Map(roleVM);
+            var result = _roleRepository.Create(roleConverted);
             if (result is null)
             {
                 return BadRequest();
@@ -53,9 +60,10 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut]
-        public IActionResult Update(Role role)
+        public IActionResult Update(RoleVM roleVM)
         {
-            var isUpdated = _roleRepository.Update(role);
+            var roleConverted = _mapper.Map(roleVM); 
+            var isUpdated = _roleRepository.Update(roleConverted);
             if (!isUpdated)
             {
                 return BadRequest();

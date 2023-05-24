@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using WebAPI.Contracts;
 using WebAPI.Model;
+using WebAPI.Repositories;
+using WebAPI.ViewModels.Roles;
+using WebAPI.ViewModels.Rooms;
 
 namespace WebAPI.Controllers
 {
@@ -8,10 +12,16 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class RoomController : ControllerBase
     {
-        private readonly IGenericRepository<Room> _roomRepository;
-        public RoomController(IGenericRepository<Room> roomRepository)
+        private readonly IRoomRepository _roomRepository;
+        private readonly IBookingRepository _bookingRepository;
+        private readonly IEmployeeRepository _employeeRepository;
+        private readonly IMapper<Room, RoomVM> _mapper;
+        public RoomController(IRoomRepository roomRepository, IMapper<Room, RoomVM> mapper, IBookingRepository bookingRepository, IEmployeeRepository employeeRepository)
         {
             _roomRepository = roomRepository;
+            _mapper = mapper;
+            _bookingRepository = bookingRepository;
+            _employeeRepository = employeeRepository;
         }
 
         [HttpGet]
@@ -23,25 +33,52 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
 
-            return Ok(rooms);
+            var data = rooms.Select(_mapper.Map).ToList();
+            return Ok(data);
         }
 
         [HttpGet("{guid}")]
         public IActionResult GetByGuid(Guid guid)
         {
-            var rooms = _roomRepository.GetByGuid(guid);
-            if (rooms is null)
+            var room = _roomRepository.GetByGuid(guid);
+            if (room is null)
             {
                 return NotFound();
             }
 
-            return Ok(rooms);
+            var data = _mapper.Map(room);
+            return Ok(data);
+        }
+
+        [HttpGet("CurrentlyUsedRooms")]
+        public IActionResult GetCurrentlyUsedRooms()
+        {
+            var room = _roomRepository.GetCurrentlyUsedRooms();
+            if (room is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(room);
+        }
+
+        [HttpGet("CurrentlyUsedRoomsByDate")]
+        public IActionResult GetCurrentlyUsedRooms(DateTime dateTime)
+        {
+            var room = _roomRepository.GetByDate(dateTime);
+            if (room is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(room);
         }
 
         [HttpPost]
-        public IActionResult Create(Room room)
+        public IActionResult Create(RoomVM roomVM)
         {
-            var result = _roomRepository.Create(room);
+            var roomConverted = _mapper.Map(roomVM);
+            var result = _roomRepository.Create(roomConverted);
             if (result is null)
             {
                 return BadRequest();
@@ -51,9 +88,10 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut]
-        public IActionResult Update(Room room)
+        public IActionResult Update(RoomVM roomVM)
         {
-            var isUpdated = _roomRepository.Update(room);
+            var roomConverted = _mapper.Map(roomVM);
+            var isUpdated = _roomRepository.Update(roomConverted);
             if (!isUpdated)
             {
                 return BadRequest();
@@ -72,6 +110,24 @@ namespace WebAPI.Controllers
             }
 
             return Ok();
+        }
+
+        
+        private string GetRoomStatus(Booking booking, DateTime dateTime)
+        {
+            
+            if (booking.StartDate <= dateTime && booking.EndDate >= dateTime)
+            {
+                return "Occupied";
+            }
+            else if (booking.StartDate > dateTime)
+            {
+                return "Booked";
+            }
+            else
+            {
+                return "Available";
+            }
         }
     }
 }
