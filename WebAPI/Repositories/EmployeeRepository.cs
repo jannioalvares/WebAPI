@@ -12,23 +12,13 @@ namespace WebAPI.Repositories
 {
     public class EmployeeRepository : GeneralRepository<Employee>, IEmployeeRepository
     {
-        private readonly IEmployeeRepository _employeeRepository;
-        private readonly IEducationRepository _educationRepository;
-        private readonly IUniversityRepository _universityRepository;
-
-        public EmployeeRepository(BookingManagementDbContext context,
-            IEducationRepository educationRepository,
-            IUniversityRepository universityRepository) : base(context)
-        {
-            _educationRepository = educationRepository;
-            _universityRepository = universityRepository;
-        }
+        public EmployeeRepository(BookingManagementDbContext context) : base(context){}
 
         public IEnumerable<MasterEmployeeVM> GetAllMasterEmployee()
         {
             var employees = GetAll();
-            var educations = _educationRepository.GetAll();
-            var universities = _universityRepository.GetAll();
+            var educations = _context.Educations.ToList();
+            var universities = _context.Universities.ToList();
 
             var employeeEducations = new List<MasterEmployeeVM>();
 
@@ -62,12 +52,11 @@ namespace WebAPI.Repositories
             return employeeEducations;
         }
 
-
         MasterEmployeeVM? IEmployeeRepository.GetMasterEmployeeByGuid(Guid guid)
         {
             var employee = GetByGuid(guid);
-            var education = _educationRepository.GetByGuid(guid);
-            var university = _universityRepository.GetByGuid(education.UniversityGuid);
+            var education = _context.Educations.FirstOrDefault(e => e.Guid == guid);
+            var university = _context.Universities.FirstOrDefault(u => u.Guid == education.UniversityGuid);
 
             var data = new MasterEmployeeVM
             {

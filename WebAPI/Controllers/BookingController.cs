@@ -87,5 +87,17 @@ namespace WebAPI.Controllers
 
             return Ok();
         }
+
+        [HttpGet("BookingLength")]
+        public IActionResult GetDuration()
+        {
+            var bookingLengths = _bookingRepository.GetBookingDuration();
+            if (!bookingLengths.Any())
+            {
+                return NotFound();
+            }
+
+            return Ok(bookingLengths);
+        }
     }
 }

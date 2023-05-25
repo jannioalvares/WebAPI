@@ -9,21 +9,13 @@ namespace WebAPI.Repositories
 {
     public class RoomRepository : GeneralRepository<Room>, IRoomRepository
     {
-        private readonly IBookingRepository _bookingRepository;
-        private readonly IEmployeeRepository _employeeRepository;
-        public RoomRepository(BookingManagementDbContext context,
-            IBookingRepository bookingRepository,
-            IEmployeeRepository employeeRepository) : base(context)
-        {
-            _bookingRepository = bookingRepository;
-            _employeeRepository = employeeRepository;
-        }
+        public RoomRepository(BookingManagementDbContext context): base(context){}
 
         public IEnumerable<MasterRoomVM> GetByDate(DateTime dateTime)
         {
             var rooms = GetAll();
-            var bookings = _bookingRepository.GetAll();
-            var employees = _employeeRepository.GetAll();
+            var bookings = _context.Bookings.ToList();
+            var employees = _context.Employees.ToList();
 
             var usedRooms = new List<MasterRoomVM>();
 
@@ -56,8 +48,8 @@ namespace WebAPI.Repositories
         public IEnumerable<RoomUsedVM> GetCurrentlyUsedRooms()
         {
             var rooms = GetAll();
-            var bookings = _bookingRepository.GetAll();
-            var employees = _employeeRepository.GetAll();
+            var bookings = _context.Bookings.ToList();
+            var employees = _context.Employees.ToList();
 
             var usedRooms = new List<RoomUsedVM>();
 

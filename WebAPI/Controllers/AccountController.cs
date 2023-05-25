@@ -4,6 +4,7 @@ using WebAPI.Contracts;
 using WebAPI.Model;
 using WebAPI.Repositories;
 using WebAPI.ViewModels.Accounts;
+using WebAPI.ViewModels.Login;
 
 namespace WebAPI.Controllers
 {
@@ -17,7 +18,6 @@ namespace WebAPI.Controllers
         {
             _accountRepository = accountRepository;
             _mapper = mapper;
-
         }
 
         [HttpGet]
@@ -82,6 +82,25 @@ namespace WebAPI.Controllers
             }
 
             return Ok();
+        }
+
+        [HttpPost("login")]
+        public IActionResult Login(LoginVM loginVM)
+        {
+            var account = _accountRepository.Login(loginVM);
+
+            if (account == null)
+            {
+                return NotFound("Account not found");
+            }
+
+            if (account.Password != loginVM.Password)
+            {
+                return BadRequest("Password is invalid");
+            }
+
+            return Ok();
+
         }
     }
 }
