@@ -99,5 +99,43 @@ namespace WebAPI.Controllers
 
             return Ok(bookingLengths);
         }
+
+        [HttpGet("BookingDetail")]
+        public IActionResult GetAllBookingDetail()
+        {
+            try
+            {
+
+                var results = _bookingRepository.GetAllBookingDetail();
+
+                return Ok(results);
+            }
+            catch
+            {
+                return Ok("Ada Error");
+            }
+
+        }
+
+        [HttpGet("BookingDetail/{guid}")]
+        public IActionResult GetDetailByGuid(Guid guid)
+        {
+            try
+            {
+                var bookingDetailVM = _bookingRepository.GetBookingDetailByGuid(guid);
+
+                if (bookingDetailVM is null)
+                {
+                    return Ok("Tidak ditemukan objek dengan Guid ini");
+                }
+
+
+                return Ok(bookingDetailVM);
+            }
+            catch
+            {
+                return Ok("Ada Error");
+            }
+        }
     }
 }

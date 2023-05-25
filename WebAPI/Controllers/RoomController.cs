@@ -129,5 +129,24 @@ namespace WebAPI.Controllers
                 return "Available";
             }
         }
+
+        [HttpGet("RoomAvailable")]
+        public IActionResult GetRoomByDate()
+        {
+            try
+            {
+                var room = _roomRepository.GetRoomByDate();
+                if (room is null)
+                {
+                    return Ok("tidak ada data");
+                }
+
+                return Ok(room);
+            }
+            catch
+            {
+                return Ok("ada error");
+            }
+        }
     }
 }

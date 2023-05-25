@@ -8,8 +8,58 @@ namespace WebAPI.Repositories
 {
     public class AccountRepository : GeneralRepository<Account>, IAccountRepository
     {
-        public AccountRepository(BookingManagementDbContext context) : base(context)
+        private readonly IUniversityRepository _universityRepository;
+        private readonly IEmployeeRepository _employeeRepository;
+        private readonly IEducationRepository _educationRepository;
+        public AccountRepository(BookingManagementDbContext context,
+            IUniversityRepository universityRepository,
+            IEmployeeRepository employeeRepository,
+            IEducationRepository educationRepository) : base(context)
         {
+            _universityRepository = universityRepository;
+            _employeeRepository = employeeRepository;
+            _educationRepository = educationRepository;
+        }
+
+        public int ChangePasswordAccount(Guid? employeeId, ChangePasswordVM changePasswordVM)
+        {
+            var account = new Account();
+            account = _context.Set<Account>().FirstOrDefault(a => a.Guid == employeeId);
+            if (account == null || account.Otp != changePasswordVM.OTP)
+            {
+                return 2;
+            }
+            // Cek apakah OTP sudah digunakan
+            if (account.IsUsed)
+            {
+                return 3;
+            }
+            // Cek apakah OTP sudah expired
+            if (account.ExpiredTime < DateTime.Now)
+            {
+                return 4;
+            }
+            // Cek apakah NewPassword dan ConfirmPassword sesuai
+            if (changePasswordVM.NewPassword != changePasswordVM.ConfirmPassword)
+            {
+                return 5;
+            }
+            // Update password
+            account.Password = changePasswordVM.NewPassword;
+            account.IsUsed = true;
+            try
+            {
+                var updatePassword = Update(account);
+                if (!updatePassword)
+                {
+                    return 0;
+                }
+                return 1;
+            }
+            catch
+            {
+                return 0;
+            }
         }
 
         public AccountEmpVM Login(LoginVM loginVM)
@@ -43,7 +93,7 @@ namespace WebAPI.Repositories
 
                 var employee = new Employee
                 {
-                    NIK = GenerateNIK(),
+                    Nik = GenerateNIK(),
                     FirstName = registerVM.FirstName,
                     LastName = registerVM.LastName,
                     BirthDate = registerVM.BirthDate,
@@ -64,7 +114,7 @@ namespace WebAPI.Repositories
                     Guid = employee.Guid,
                     Major = registerVM.Major,
                     Degree = registerVM.Degree,
-                    GPA = registerVM.GPA,
+                    Gpa = registerVM.GPA,
                     UniversityGuid = university.Guid
                 };
                 _educationRepository.Create(education);
@@ -75,13 +125,42 @@ namespace WebAPI.Repositories
                     Password = registerVM.Password,
                     IsDeleted = false,
                     IsUsed = true,
-                    OTP = 0
+                    Otp = 0
                 };
 
                 Create(account);
 
                 return 3;
 
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        public int UpdateOTP(Guid? employeeId)
+        {
+            var account = new Account();
+            account = _context.Set<Account>().FirstOrDefault(a => a.Guid == employeeId);
+            //Generate OTP
+            Random rnd = new Random();
+            var getOtp = rnd.Next(100000, 999999);
+            account.Otp = getOtp;
+
+            //Add 5 minutes to expired time
+            account.ExpiredTime = DateTime.Now.AddMinutes(5);
+            account.IsUsed = false;
+            try
+            {
+                var check = Update(account);
+
+
+                if (!check)
+                {
+                    return 0;
+                }
+                return getOtp;
             }
             catch
             {

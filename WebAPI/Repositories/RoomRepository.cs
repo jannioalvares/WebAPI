@@ -75,5 +75,49 @@ namespace WebAPI.Repositories
             }
             return usedRooms;
         }
+
+        public IEnumerable<EmptyRoomVM> GetRoomByDate()
+        {
+            try
+            {
+                //get all data from booking and rooms
+                var booking = _context.Bookings.ToList();
+                var rooms = GetAll();
+
+                var startToday = DateTime.Today;
+                var endToday = DateTime.Today.AddHours(23).AddMinutes(59);
+
+                var roomUse = rooms.Join(booking, Room => Room.Guid, booking => booking.RoomGuid, (Room, booking) =>
+                new { Room, booking })
+                        .Select(joinResult => new {
+                            joinResult.Room.Name,
+                            joinResult.Room.Floor,
+                            joinResult.Room.Capacity,
+                            joinResult.booking.StartDate,
+                            joinResult.booking.EndDate
+                        }
+                 );
+                var roomUseTodays = new List<EmptyRoomVM>();
+                foreach (var room in roomUse)
+                {
+                    if ((room.StartDate > startToday && room.EndDate > endToday) || (room.StartDate < startToday && room.EndDate < startToday))
+                    {
+                        var roomDay = new EmptyRoomVM
+                        {
+                            RoomName = room.Name,
+                            Floor = room.Floor,
+                            Capacity = room.Capacity,
+                        };
+                        roomUseTodays.Add(roomDay);
+                    }
+                };
+                return roomUseTodays;
+            }
+            catch
+            {
+                return null;
+
+            }
+        }
     }
 }

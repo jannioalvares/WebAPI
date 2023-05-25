@@ -22,8 +22,11 @@ namespace WebAPI.Repositories
                     _context.SaveChanges();
 
                 }
-
-                Create(university);
+                else
+                {
+                    _context.Universities.Add(university);
+                    _context.SaveChanges();
+                }
 
                 return university;
 

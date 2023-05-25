@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Net;
 using WebAPI.Contracts;
 using WebAPI.Model;
+using WebAPI.Others;
 using WebAPI.Repositories;
 using WebAPI.ViewModels.Bookings;
 using WebAPI.ViewModels.Educations;
@@ -15,17 +17,10 @@ namespace WebAPI.Controllers
     public class EmployeeController : ControllerBase
     {
         private readonly IEmployeeRepository _employeeRepository;
-        private readonly IEducationRepository _educationRepository;
-        private readonly IUniversityRepository _universityRepository;
         private readonly IMapper<Employee, EmployeeVM> _mapper;
-        public EmployeeController(IEmployeeRepository employeeRepository, 
-            IEducationRepository educationRepository, 
-            IUniversityRepository universityRepository, 
-            IMapper<Employee, EmployeeVM> mapper) 
+        public EmployeeController(IEmployeeRepository employeeRepository, IMapper<Employee, EmployeeVM> mapper) 
         {
             _employeeRepository = employeeRepository;
-            _educationRepository = educationRepository;
-            _universityRepository = universityRepository;
             _mapper = mapper;
         }
 
@@ -35,10 +30,21 @@ namespace WebAPI.Controllers
             var masterEmployees = _employeeRepository.GetAllMasterEmployee();
             if (!masterEmployees.Any())
             {
-                return NotFound();
+                return NotFound(new ResponseVM<string>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Employee Not Found"
+                });
             }
 
-            return Ok(masterEmployees);
+            return Ok(new ResponseVM<IEnumerable<MasterEmployeeVM>>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Employee Found",
+                Data = masterEmployees
+            });
         }
 
         [HttpGet("GetMasterEmployeeByGuid")]
@@ -47,10 +53,21 @@ namespace WebAPI.Controllers
             var masterEmployees = _employeeRepository.GetMasterEmployeeByGuid(guid);
             if (masterEmployees is null)
             {
-                return NotFound();
+                return NotFound(new ResponseVM<string>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Employee Not Found"
+                });
             }
 
-            return Ok(masterEmployees);
+            return Ok(new ResponseVM<MasterEmployeeVM>
+            {
+                Code = 200,
+                Status = "OK",
+                Message = "Employee Found",
+                Data = masterEmployees
+            });
         }
 
         [HttpGet]
