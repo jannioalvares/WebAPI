@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebAPI.Contracts;
 using WebAPI.Model;
+using WebAPI.Others;
 using WebAPI.Repositories;
 using WebAPI.ViewModels.Roles;
 using WebAPI.ViewModels.Rooms;
@@ -23,65 +24,70 @@ namespace WebAPI.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
+            var response = new ResponseVM<RoleVM>();
             var roles = _roleRepository.GetAll();
             if (!roles.Any())
             {
-                return NotFound();
+                return NotFound(response.NotFound("Role Not Found"));
             }
 
             var data = roles.Select(_mapper.Map).ToList();
-            return Ok(data);
+            return Ok(response.Success("Role Found"));
         }
 
         [HttpGet("{guid}")]
         public IActionResult GetByGuid(Guid guid)
         {
+            var response = new ResponseVM<RoleVM>();
             var role = _roleRepository.GetByGuid(guid);
             if (role is null)
             {
-                return NotFound();
+                return NotFound(response.NotFound("Role Not Found"));
             }
 
             var data = _mapper.Map(role);
-            return Ok(data);
+            return Ok(response.Success("Role Found"));
         }
 
         [HttpPost]
         public IActionResult Create(RoleVM roleVM)
         {
+            var response = new ResponseVM<RoleVM>();
             var roleConverted = _mapper.Map(roleVM);
             var result = _roleRepository.Create(roleConverted);
             if (result is null)
             {
-                return BadRequest();
+                return BadRequest(response.Failed("Role Create Failed"));
             }
 
-            return Ok(result);
+            return Ok(response.Success("Role Create Success"));
         }
 
         [HttpPut]
         public IActionResult Update(RoleVM roleVM)
         {
+            var response = new ResponseVM<RoleVM>();
             var roleConverted = _mapper.Map(roleVM); 
             var isUpdated = _roleRepository.Update(roleConverted);
             if (!isUpdated)
             {
-                return BadRequest();
+                return BadRequest(response.Failed("Role Update Failed"));
             }
 
-            return Ok();
+            return Ok(response.Success("Role Update Success"));
         }
 
         [HttpDelete("{guid}")]
         public IActionResult Delete(Guid guid)
         {
+            var response = new ResponseVM<RoleVM>();
             var isDeleted = _roleRepository.Delete(guid);
             if (!isDeleted)
             {
-                return BadRequest();
+                return BadRequest(response.Failed("Role Delete Failed"));
             }
 
-            return Ok();
+            return Ok(response.Success("Role Delete Success"));
         }
     }
 }

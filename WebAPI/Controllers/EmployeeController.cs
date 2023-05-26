@@ -76,62 +76,77 @@ namespace WebAPI.Controllers
             var employees = _employeeRepository.GetAll();
             if (!employees.Any())
             {
-                return NotFound();
+                return NotFound(new ResponseVM<string>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Employee Not Found"
+                });
             }
 
             var data = employees.Select(_mapper.Map).ToList();
-            return Ok(data);
+            return Ok(new ResponseVM<List<EmployeeVM>>
+            {
+                Code = 200,
+                Status = "OK",
+                Message = "Employee Found",
+                Data = data
+            });
         }
 
         [HttpGet("{guid}/GetByGuid")]
         public IActionResult GetByGuid(Guid guid)
         {
+            var response = new ResponseVM<EmployeeVM>();
             var employee = _employeeRepository.GetByGuid(guid);
             if (employee is null)
             {
-                return NotFound();
+                return NotFound(response.Failed("Employee Not Found"));
             }
 
             var data = _mapper.Map(employee);
-            return Ok(data);
+            return Ok(response.Success(data, "Employee Found"));
         }
 
         [HttpPost]
         public IActionResult Create(EmployeeVM employeeVM)
         {
+            var response = new ResponseVM<EmployeeVM>();
             var employeeConverted = _mapper.Map(employeeVM);
             var result = _employeeRepository.Create(employeeConverted);
             if (result is null)
             {
-                return BadRequest();
+                return BadRequest(response.Failed("Employee Create Failed"));
             }
 
-            return Ok(result);
+            return Ok(response.Success("Employee Create Success"));
         }
 
         [HttpPut]
         public IActionResult Update(EmployeeVM employeeVM)
         {
+            var response = new ResponseVM<EmployeeVM>();
             var employeeConverted = _mapper.Map(employeeVM);
             var isUpdated = _employeeRepository.Update(employeeConverted);
             if (!isUpdated)
             {
-                return BadRequest();
+                return BadRequest(response.Failed("Employee Update Failed"));
             }
 
-            return Ok();
+            return Ok(response.Success("Employee Update Success"));
         }
 
         [HttpDelete("{guid}")]
         public IActionResult Delete(Guid guid)
         {
+            var response = new ResponseVM<EmployeeVM>();
             var isDeleted = _employeeRepository.Delete(guid);
             if (!isDeleted)
             {
-                return BadRequest();
+                return BadRequest(response.Failed("Employee Delete Failed"));
             }
 
-            return Ok();
+            return Ok(response.Success("Employee Delete Success"));
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebAPI.Contracts;
 using WebAPI.Model;
+using WebAPI.Others;
 using WebAPI.Repositories;
 using WebAPI.ViewModels.Educations;
 using WebAPI.ViewModels.Universities;
@@ -12,114 +13,94 @@ namespace WebAPI.Controllers
     public class UniversityController : ControllerBase
     {
         private readonly IUniversityRepository _universityRepository;
-        private readonly IEducationRepository _educationRepository;
         private readonly IMapper<University, UniversityVM> _mapper;
-        private readonly IMapper<Education, EducationVM> _educationMapper;
 
-        public UniversityController(IUniversityRepository universityRepository, IEducationRepository educationRepository,
-            IMapper<University, UniversityVM> mapper, IMapper<Education, EducationVM> educationMapper)
+        public UniversityController(IUniversityRepository universityRepository, IMapper<University, UniversityVM> mapper)
         {
             _universityRepository = universityRepository;
-            _educationRepository = educationRepository;
             _mapper = mapper;
-            _educationMapper = educationMapper;
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
+            var response = new ResponseVM<IEnumerable<UniversityVM>>();
             var universities = _universityRepository.GetAll();
             if (!universities.Any())
             {
-                return NotFound();
+                return NotFound(response.NotFound("University Not Found"));
             }
 
             var data = universities.Select(_mapper.Map).ToList();
 
-            return Ok(data);
+            return Ok(response.Success(data, "University Found"));
         }
 
         [HttpGet("WithEducation")]
         public IActionResult GetAllWithEducation()
         {
-            var universities = _universityRepository.GetAll();
-            if (!universities.Any())
+            var response = new ResponseVM<IEnumerable<UniversityEducationVM>>();
+            var univEdu = _universityRepository.GetUniversityEducation();
+            if (!univEdu.Any())
             {
-                return NotFound();
+                return NotFound(response.NotFound("UniversityEducation Not Found"));
             }
 
-            var results = new List<UniversityEducationVM>();
-            foreach (var university in universities)
-            {
-                var education = _educationRepository.GetByUniversityId(university.Guid);
-                //var educationMapped = education.Select(_mapper.Map).ToList();
-
-                var result = new UniversityEducationVM
-                {
-                    Guid = university.Guid,
-                    Code = university.Code,
-                    Name = university.Name,
-                    //Educations = education.Select(_mapper.Map).ToList();
-                };
-
-                results.Add(result);
-            }
-
-            return Ok(results);
+            return Ok(response.Success(univEdu,"UniversityEducation Found"));
         }
 
         [HttpGet("{guid}")]
         public IActionResult GetByGuid(Guid guid)
         {
+            var response = new ResponseVM<UniversityVM>();
             var university = _universityRepository.GetByGuid(guid);
             if (university is null)
             {
-                return NotFound();
+                return NotFound(response.NotFound("University Not Found"));
             }
-
             var data = _mapper.Map(university);
-
-            return Ok(university);
+            return Ok(response.Success(data, "University Found"));
         }
 
         [HttpPost]
         public IActionResult Create(UniversityVM universityVM)
         {
+            var response = new ResponseVM<UniversityVM>();
             var universityConverted = _mapper.Map(universityVM);
-
             var result = _universityRepository.Create(universityConverted);
             if (result is null)
             {
-                return BadRequest();
+                return BadRequest(response.Failed("University Create Failed"));
             }
 
-            return Ok(result);
+            return Ok(response.Success("University Create Success"));
         }
 
         [HttpPut]
         public IActionResult Update(UniversityVM universityVM)
         {
+            var response = new ResponseVM<UniversityVM>();
             var universityConverted = _mapper.Map(universityVM);
-
             var isUpdated = _universityRepository.Update(universityConverted);
             if (!isUpdated)
             {
-                return BadRequest();
+                return BadRequest(response.Failed("University Update Failed"));
             }
 
-            return Ok();
+            return Ok(response.Success("University Update Success"));
         }
 
         [HttpDelete("{guid}")]
         public IActionResult Delete(Guid guid)
         {
+            var response = new ResponseVM<UniversityVM>();
             var isDeleted = _universityRepository.Delete(guid);
             if (!isDeleted)
             {
-                return BadRequest();
+                return BadRequest(response.Failed("University Delete Failed"));
             }
 
-            return Ok();
+            return Ok(response.Success("University Delete Success"));
         }
 
     }

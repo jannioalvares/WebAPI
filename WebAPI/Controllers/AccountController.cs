@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
+using System.Net;
 using WebAPI.Contracts;
 using WebAPI.Model;
+using WebAPI.Others;
 using WebAPI.Repositories;
 using WebAPI.Utility;
 using WebAPI.ViewModels.Accounts;
@@ -29,11 +31,22 @@ namespace WebAPI.Controllers
             var accounts = _accountRepository.GetAll();
             if (!accounts.Any())
             {
-                return NotFound();
+                return NotFound(new ResponseVM<AccountVM>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Account Not Found"
+                });
             }
 
             var data = accounts.Select(_mapper.Map).ToList();
-            return Ok(data);
+            return Ok(new ResponseVM<List<AccountVM>>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Account Found",
+                Data = data
+            });
         }
 
         [HttpGet("{guid}")]
@@ -42,11 +55,22 @@ namespace WebAPI.Controllers
             var account = _accountRepository.GetByGuid(guid);
             if (account is null)
             {
-                return NotFound();
+                return NotFound(new ResponseVM<List<AccountVM>>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Guid Not Found",
+                });
             }
 
             var data = _mapper.Map(account);
-            return Ok(data);
+            return Ok(new ResponseVM<AccountVM>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Guid Found",
+                Data = data
+            });
         }
 
         [HttpPost]
@@ -56,10 +80,20 @@ namespace WebAPI.Controllers
             var result = _accountRepository.Create(accountConverted);
             if (result is null)
             {
-                return BadRequest();
+                return BadRequest(new ResponseVM<AccountVM>
+                {
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.BadRequest.ToString(),
+                    Message = "Failed Create Account"
+                });
             }
 
-            return Ok(result);
+            return Ok(new ResponseVM<string>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Success Create Account"
+            });
         }
 
         [HttpPut]
@@ -69,10 +103,20 @@ namespace WebAPI.Controllers
             var isUpdated = _accountRepository.Update(accountConverted);
             if (!isUpdated)
             {
-                return BadRequest();
+                return BadRequest(new ResponseVM<AccountVM>
+                {
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.BadRequest.ToString(),
+                    Message = "Failed Update Account"
+                });
             }
 
-            return Ok();
+            return Ok(new ResponseVM<AccountVM>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Success Update Account"
+            });
         }
 
         [HttpDelete("{guid}")]
@@ -81,10 +125,20 @@ namespace WebAPI.Controllers
             var isDeleted = _accountRepository.Delete(guid);
             if (!isDeleted)
             {
-                return BadRequest();
+                return BadRequest(new ResponseVM<AccountVM>
+                {
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Failed Delete Account"
+                });
             }
 
-            return Ok();
+            return Ok(new ResponseVM<AccountVM>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Success Delete Account"
+            });
         }
 
         [HttpPost("Login")]
@@ -94,15 +148,30 @@ namespace WebAPI.Controllers
 
             if (account == null)
             {
-                return NotFound("Account not found");
+                return NotFound(new ResponseVM<LoginVM>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Account Not Found"
+                });
             }
 
             if (account.Password != loginVM.Password)
             {
-                return BadRequest("Password is invalid");
+                return BadRequest(new ResponseVM<LoginVM>
+                {
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.BadRequest.ToString(),
+                    Message = "Password Invalid"
+                });
             }
 
-            return Ok();
+            return Ok(new ResponseVM<LoginVM>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Login Success"
+            });
 
         }
 
@@ -115,16 +184,41 @@ namespace WebAPI.Controllers
             switch (result)
             {
                 case 0:
-                    return BadRequest("Registration failed");
+                    return BadRequest(new ResponseVM<AccountVM>
+                    {
+                        Code = StatusCodes.Status400BadRequest,
+                        Status = HttpStatusCode.BadRequest.ToString(),
+                        Message = "Registration failed"
+                    });
                 case 1:
-                    return BadRequest("Email already exists");
+                    return BadRequest(new ResponseVM<AccountVM>
+                    {
+                        Code = StatusCodes.Status400BadRequest,
+                        Status = HttpStatusCode.BadRequest.ToString(),
+                        Message = "Email already exists"
+                    });
                 case 2:
-                    return BadRequest("Phone number already exists");
+                    return BadRequest(new ResponseVM<AccountVM>
+                    {
+                        Code = StatusCodes.Status400BadRequest,
+                        Status = HttpStatusCode.BadRequest.ToString(),
+                        Message = "Phone number already exists"
+                    });
                 case 3:
-                    return Ok("Registration success");
+                    return Ok(new ResponseVM<AccountVM>
+                    {
+                        Code = StatusCodes.Status200OK,
+                        Status = HttpStatusCode.OK.ToString(),
+                        Message = "Registration success"
+                    });
             }
 
-            return Ok();
+            return Ok(new ResponseVM<AccountVM>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Registration success"
+            });
 
         }
 
@@ -132,22 +226,23 @@ namespace WebAPI.Controllers
         public IActionResult ChangePassword(ChangePasswordVM changePasswordVM)
         {
             // Cek apakah email dan OTP valid
+            var response = new ResponseVM<ChangePasswordVM>();
             var account = _employeeRepository.FindGuidByEmail(changePasswordVM.Email);
             var changePass = _accountRepository.ChangePasswordAccount(account, changePasswordVM);
             switch (changePass)
             {
                 case 0:
-                    return BadRequest("");
+                    return BadRequest(response.Error("Runtime error"));
                 case 1:
-                    return Ok("Password has been changed successfully");
+                    return Ok(response.Success("Password has been changed successfully"));
                 case 2:
-                    return BadRequest("Invalid OTP");
+                    return BadRequest(response.Error("Invalid OTP"));
                 case 3:
-                    return BadRequest("OTP has already been used");
+                    return BadRequest(response.Error("OTP has already been used"));
                 case 4:
-                    return BadRequest("OTP expired");
+                    return BadRequest(response.Error("OTP expired"));
                 case 5:
-                    return BadRequest("Wrong Password No Same");
+                    return BadRequest(response.Error("Wrong Password No Same"));
                 default:
                     return BadRequest();
             }
@@ -158,11 +253,11 @@ namespace WebAPI.Controllers
         [HttpPost("ForgotPassword" + "{email}")]
         public IActionResult UpdateResetPass(String email)
         {
-
+            var response = new ResponseVM<AccountResetPasswordVM>();
             var getGuid = _employeeRepository.FindGuidByEmail(email);
             if (getGuid == null)
             {
-                return NotFound("Akun tidak ditemukan");
+                return NotFound(response.NotFound("Email not found"));
             }
 
             var isUpdated = _accountRepository.UpdateOTP(getGuid);
@@ -185,7 +280,7 @@ namespace WebAPI.Controllers
                                .WithEmail(email)
                                .Send();
 
-                    return Ok(hasil);
+                    return Ok(response.Success(hasil, ""));
 
             }
         }

@@ -8,8 +8,8 @@ namespace WebAPI.ViewModels.Universities
         public Guid? Guid { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
-
-       // public IEnumerable<EducationVM> Educations { get; set; }
-       public IEnumerable<EducationVM> Educations { get; set; }
+        public string Major { get; set; }
+        public string Degree { get; set; }
+        public float GPA { get; set; }
     }
 }

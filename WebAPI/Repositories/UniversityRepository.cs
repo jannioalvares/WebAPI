@@ -1,6 +1,9 @@
-﻿using WebAPI.Context;
+﻿using Microsoft.AspNetCore.Http;
+using WebAPI.Context;
 using WebAPI.Contracts;
 using WebAPI.Model;
+using WebAPI.ViewModels.Employees;
+using WebAPI.ViewModels.Universities;
 
 namespace WebAPI.Repositories
 {
@@ -35,6 +38,31 @@ namespace WebAPI.Repositories
             {
                 return null;
             }
+        }
+
+        public IEnumerable<UniversityEducationVM> GetUniversityEducation()
+        {
+            var universityEducations = new List<UniversityEducationVM>();
+            var universities = GetAll();
+            foreach (var university in universities)
+            {
+                var education = _context.Educations.FirstOrDefault(e => e.UniversityGuid == university.Guid);
+
+                if (education != null)
+                {
+                    var result = new UniversityEducationVM
+                    {
+                        Guid = university.Guid,
+                        Code = university.Code,
+                        Name = university.Name,
+                        Major = education.Major,
+                        Degree = education.Degree,
+                        GPA = education.Gpa
+                    };
+                    universityEducations.Add(result);
+                }
+            }
+            return universityEducations;
         }
     }
 }
