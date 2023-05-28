@@ -1,4 +1,4 @@
-﻿namespace WebAPI.ViewModels.Login
+﻿namespace WebAPI.ViewModels.Accounts
 {
     public class LoginVM
     {

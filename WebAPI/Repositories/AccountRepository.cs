@@ -2,7 +2,6 @@
 using WebAPI.Contracts;
 using WebAPI.Model;
 using WebAPI.ViewModels.Accounts;
-using WebAPI.ViewModels.Login;
 
 namespace WebAPI.Repositories
 {
@@ -62,21 +61,28 @@ namespace WebAPI.Repositories
             }
         }
 
-        public AccountEmpVM Login(LoginVM loginVM)
+        public LoginVM Login(LoginVM loginVM)
         {
             var account = GetAll();
             var employee = _context.Employees.ToList();
+
             var query = from emp in employee
                         join acc in account
                         on emp.Guid equals acc.Guid
                         where emp.Email == loginVM.Email
-                        select new AccountEmpVM
+                        select new LoginVM
                         {
                             Email = emp.Email,
                             Password = acc.Password
-
                         };
-            return query.FirstOrDefault();
+            var validate = query.FirstOrDefault();
+
+            if (validate != null && Hashing.ValidatePassword(loginVM.Password, validate.Password))
+            {
+                loginVM.Password = validate.Password;
+            }
+
+            return validate;
         }
 
         public int Register(RegisterVM registerVM)
@@ -122,7 +128,7 @@ namespace WebAPI.Repositories
                 var account = new Account
                 {
                     Guid = employee.Guid,
-                    Password = registerVM.Password,
+                    Password = Hashing.HashPassword(registerVM.Password),
                     IsDeleted = false,
                     IsUsed = true,
                     Otp = 0

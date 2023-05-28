@@ -7,138 +7,26 @@ using WebAPI.Others;
 using WebAPI.Repositories;
 using WebAPI.Utility;
 using WebAPI.ViewModels.Accounts;
-using WebAPI.ViewModels.Login;
 
 namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AccountController : ControllerBase
+    public class AccountController : BaseController<Account, AccountVM>
     {
         private readonly IAccountRepository _accountRepository;
         private readonly IEmployeeRepository _employeeRepository;
+        private readonly IEmailService _emailService;
         private readonly IMapper<Account, AccountVM> _mapper;
-        public AccountController(IAccountRepository accountRepository, IMapper<Account, AccountVM> mapper, IEmployeeRepository employeeRepository)
+        public AccountController(IAccountRepository accountRepository, 
+            IMapper<Account, AccountVM> mapper, 
+            IEmployeeRepository employeeRepository, 
+            IEmailService emailService) : base(accountRepository, mapper)
         {
             _accountRepository = accountRepository;
             _mapper = mapper;
             _employeeRepository = employeeRepository;
-        }
-
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            var accounts = _accountRepository.GetAll();
-            if (!accounts.Any())
-            {
-                return NotFound(new ResponseVM<AccountVM>
-                {
-                    Code = StatusCodes.Status404NotFound,
-                    Status = HttpStatusCode.NotFound.ToString(),
-                    Message = "Account Not Found"
-                });
-            }
-
-            var data = accounts.Select(_mapper.Map).ToList();
-            return Ok(new ResponseVM<List<AccountVM>>
-            {
-                Code = StatusCodes.Status200OK,
-                Status = HttpStatusCode.OK.ToString(),
-                Message = "Account Found",
-                Data = data
-            });
-        }
-
-        [HttpGet("{guid}")]
-        public IActionResult GetByGuid(Guid guid)
-        {
-            var account = _accountRepository.GetByGuid(guid);
-            if (account is null)
-            {
-                return NotFound(new ResponseVM<List<AccountVM>>
-                {
-                    Code = StatusCodes.Status404NotFound,
-                    Status = HttpStatusCode.NotFound.ToString(),
-                    Message = "Guid Not Found",
-                });
-            }
-
-            var data = _mapper.Map(account);
-            return Ok(new ResponseVM<AccountVM>
-            {
-                Code = StatusCodes.Status200OK,
-                Status = HttpStatusCode.OK.ToString(),
-                Message = "Guid Found",
-                Data = data
-            });
-        }
-
-        [HttpPost]
-        public IActionResult Create(AccountVM accountVM)
-        {
-            var accountConverted = _mapper.Map(accountVM);
-            var result = _accountRepository.Create(accountConverted);
-            if (result is null)
-            {
-                return BadRequest(new ResponseVM<AccountVM>
-                {
-                    Code = StatusCodes.Status400BadRequest,
-                    Status = HttpStatusCode.BadRequest.ToString(),
-                    Message = "Failed Create Account"
-                });
-            }
-
-            return Ok(new ResponseVM<string>
-            {
-                Code = StatusCodes.Status200OK,
-                Status = HttpStatusCode.OK.ToString(),
-                Message = "Success Create Account"
-            });
-        }
-
-        [HttpPut]
-        public IActionResult Update(AccountVM accountVM)
-        {
-            var accountConverted = _mapper.Map(accountVM);
-            var isUpdated = _accountRepository.Update(accountConverted);
-            if (!isUpdated)
-            {
-                return BadRequest(new ResponseVM<AccountVM>
-                {
-                    Code = StatusCodes.Status400BadRequest,
-                    Status = HttpStatusCode.BadRequest.ToString(),
-                    Message = "Failed Update Account"
-                });
-            }
-
-            return Ok(new ResponseVM<AccountVM>
-            {
-                Code = StatusCodes.Status200OK,
-                Status = HttpStatusCode.OK.ToString(),
-                Message = "Success Update Account"
-            });
-        }
-
-        [HttpDelete("{guid}")]
-        public IActionResult Delete(Guid guid)
-        {
-            var isDeleted = _accountRepository.Delete(guid);
-            if (!isDeleted)
-            {
-                return BadRequest(new ResponseVM<AccountVM>
-                {
-                    Code = StatusCodes.Status400BadRequest,
-                    Status = HttpStatusCode.NotFound.ToString(),
-                    Message = "Failed Delete Account"
-                });
-            }
-
-            return Ok(new ResponseVM<AccountVM>
-            {
-                Code = StatusCodes.Status200OK,
-                Status = HttpStatusCode.OK.ToString(),
-                Message = "Success Delete Account"
-            });
+            _emailService = emailService;
         }
 
         [HttpPost("Login")]
@@ -176,10 +64,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("Register")]
-
         public IActionResult Register(RegisterVM registerVM)
         {
-
             var result = _accountRepository.Register(registerVM);
             switch (result)
             {
@@ -266,21 +152,13 @@ namespace WebAPI.Controllers
             {
                 case 0:
                     return BadRequest();
-                default:
-                    var hasil = new AccountResetPasswordVM
-                    {
-                        Email = email,
-                        OTP = isUpdated
-                    };
+                default:                   
+                    _emailService.SetEmail(email)
+                        .SetSubject("Forgot Passowrd")
+                        .SetHtmlMessage($"Your OTP is {isUpdated}")
+                        .SendEmailAsync();
 
-                    MailService mailService = new MailService();
-                    mailService.WithSubject("Kode OTP")
-                               .WithBody("OTP anda adalah: " + isUpdated.ToString() + ".\n" +
-                                         "Mohon kode OTP anda tidak diberikan kepada pihak lain" + ".\n" + "Terima kasih.")
-                               .WithEmail(email)
-                               .Send();
-
-                    return Ok(response.Success(hasil, ""));
+                    return Ok(response.Success("OTP has been sent to your email"));
 
             }
         }

@@ -14,46 +14,20 @@ namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class RoomController : ControllerBase
+    public class RoomController : BaseController<Room, RoomVM>
     {
         private readonly IRoomRepository _roomRepository;
         private readonly IBookingRepository _bookingRepository;
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IMapper<Room, RoomVM> _mapper;
-        public RoomController(IRoomRepository roomRepository, IMapper<Room, RoomVM> mapper, IBookingRepository bookingRepository, IEmployeeRepository employeeRepository)
+        public RoomController(IRoomRepository roomRepository, IMapper<Room, RoomVM> mapper, 
+            IBookingRepository bookingRepository, 
+            IEmployeeRepository employeeRepository) : base (roomRepository, mapper)
         {
             _roomRepository = roomRepository;
             _mapper = mapper;
             _bookingRepository = bookingRepository;
             _employeeRepository = employeeRepository;
-        }
-
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            var response = new ResponseVM<IEnumerable<RoomVM>>();
-            var rooms = _roomRepository.GetAll();
-            if (!rooms.Any())
-            {
-                return NotFound(response.NotFound("Room Not Found"));
-            }
-
-            var data = rooms.Select(_mapper.Map).ToList();
-            return Ok(response.Success(data, "Room Found"));
-        }
-
-        [HttpGet("{guid}")]
-        public IActionResult GetByGuid(Guid guid)
-        {
-            var response = new ResponseVM<RoomVM>();
-            var room = _roomRepository.GetByGuid(guid);
-            if (room is null)
-            {
-                return NotFound(response.NotFound("Room Not Found"));
-            }
-
-            var data = _mapper.Map(room);
-            return Ok(response.Success(data, "Room Found"));
         }
 
         [HttpGet("CurrentlyUsedRooms")]
@@ -101,48 +75,6 @@ namespace WebAPI.Controllers
                 Data = room
             });
         }
-
-        [HttpPost]
-        public IActionResult Create(RoomVM roomVM)
-        {
-            var response = new ResponseVM<Room>();
-            var roomConverted = _mapper.Map(roomVM);
-            var result = _roomRepository.Create(roomConverted);
-            if (result is null)
-            {
-                return BadRequest(response.Failed("Room Create Failed"));
-            }
-
-            return Ok(response.Success(result, "Room Create Success"));
-        }
-
-        [HttpPut]
-        public IActionResult Update(RoomVM roomVM)
-        {
-            var response = new ResponseVM<RoomVM>();
-            var roomConverted = _mapper.Map(roomVM);
-            var isUpdated = _roomRepository.Update(roomConverted);
-            if (!isUpdated)
-            {
-                return BadRequest(response.Failed("Room Update Failed"));
-            }
-
-            return Ok(response.Success("Room Update Success"));
-        }
-
-        [HttpDelete("{guid}")]
-        public IActionResult Delete(Guid guid)
-        {
-            var response = new ResponseVM<RoomVM>();
-            var isDeleted = _roomRepository.Delete(guid);
-            if (!isDeleted)
-            {
-                return BadRequest(response.Failed("Room Delete Failed"));
-            }
-
-            return Ok(response.Success("Room Delete Success"));
-        }
-
 
         [HttpGet("RoomAvailable")]
         public IActionResult GetRoomByDate()
