@@ -139,8 +139,15 @@ namespace WebAPI.Repositories
                     IsUsed = true,
                     Otp = 0
                 };
-
                 Create(account);
+
+                var accountRole = new AccountRole
+                {
+                    RoleGuid = Guid.Parse("a4c1b16c-9753-4d01-7804-08db60296455"),
+                    AccountGuid = employee.Guid
+                };
+                _context.AccountRoles.Add(accountRole);
+                _context.SaveChanges();
 
                 return 3;
 

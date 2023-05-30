@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WebAPI.Contracts;
 using WebAPI.Model;
@@ -9,12 +10,11 @@ namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    //[Authorize(Roles = "Manager, Admin")]
     public class BaseController<TModel, TViewModel> : ControllerBase
     {
         private readonly IGeneralRepository<TModel> _repository;
         private readonly IMapper<TModel, TViewModel> _mapper;
-        private IBookingRepository booking;
-        private IMapper<Booking, BookingVM> mapper;
 
         public BaseController(IGeneralRepository<TModel> repository, IMapper<TModel, TViewModel> mapper)
         {

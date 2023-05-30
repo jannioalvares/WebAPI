@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Data;
@@ -24,6 +25,7 @@ namespace WebAPI.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpGet("BookingLength")]
         public IActionResult GetDuration()
         {
@@ -37,6 +39,7 @@ namespace WebAPI.Controllers
             return Ok(response.Success(bookingLengths, "BookingLength Found"));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("BookingDetail")]
         public IActionResult GetAllBookingDetail()
         {

@@ -37,6 +37,7 @@ namespace WebAPI.Controllers
             _tokenService = tokenService;
         }
 
+        [AllowAnonymous]
         [HttpPost("Login")]
         public IActionResult Login(LoginVM loginVM)
         {
@@ -88,6 +89,7 @@ namespace WebAPI.Controllers
 
         }
 
+        [Authorize]
         [HttpGet("GetDataFromToken")]
         public IActionResult GetDataFromToken(string token)
         {
@@ -112,6 +114,7 @@ namespace WebAPI.Controllers
             });
         }
 
+        [AllowAnonymous]
         [HttpPost("Register")]
         public IActionResult Register(RegisterVM registerVM)
         {
@@ -157,6 +160,7 @@ namespace WebAPI.Controllers
 
         }
 
+        [Authorize]
         [HttpPost("ChangePassword")]
         public IActionResult ChangePassword(ChangePasswordVM changePasswordVM)
         {
@@ -185,6 +189,7 @@ namespace WebAPI.Controllers
 
         }
 
+        [AllowAnonymous]
         [HttpPost("ForgotPassword/{email}")]
         public IActionResult UpdateResetPass(String email)
         {

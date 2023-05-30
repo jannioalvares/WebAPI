@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
 using WebAPI.Contracts;
 using WebAPI.Model;
 using WebAPI.Others;
 using WebAPI.Repositories;
+using WebAPI.Utility;
 using WebAPI.ViewModels.Bookings;
 using WebAPI.ViewModels.Educations;
 using WebAPI.ViewModels.Employees;
@@ -13,6 +15,7 @@ using WebAPI.ViewModels.Universities;
 namespace WebAPI.Controllers
 {
     [ApiController]
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}, {nameof(RoleLevel.Manager)}")]
     [Route("api/[controller]")]
     public class EmployeeController : BaseController<Employee, EmployeeVM>
     {

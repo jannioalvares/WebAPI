@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using WebAPI.Context;
 using WebAPI.Model;
+using WebAPI.Utility;
 
 namespace WebAPI.Context
 {
@@ -25,6 +26,29 @@ namespace WebAPI.Context
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<Role>().HasData(new Role
+            {
+                Guid = Guid.Parse("a4c1b16c-9753-4d01-7804-08db60296455"),
+                Name = nameof(RoleLevel.User),
+                CreatedDate = DateTime.Now,
+                ModifiedDate = DateTime.Now
+            },
+            new Role
+            {
+                Guid = Guid.Parse("5e735041-ce30-43b9-d7aa-08db60bf349a"),
+                Name = nameof(RoleLevel.Manager),
+                CreatedDate = DateTime.Now,
+                ModifiedDate = DateTime.Now
+            },
+            new Role
+            {
+                Guid = Guid.Parse("74cd5c21-af22-4d46-7581-08db58444df6"),
+                Name = nameof(RoleLevel.Admin),
+                CreatedDate = DateTime.Now,
+                ModifiedDate = DateTime.Now
+            });
+
 
             builder.Entity<Employee>().HasIndex(e => new{ 
                 e.Nik, 
