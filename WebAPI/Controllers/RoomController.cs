@@ -1,13 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Nest;
-using System;
 using System.Net;
 using WebAPI.Contracts;
 using WebAPI.Model;
 using WebAPI.Others;
-using WebAPI.Repositories;
-using WebAPI.ViewModels.Employees;
-using WebAPI.ViewModels.Roles;
 using WebAPI.ViewModels.Rooms;
 
 namespace WebAPI.Controllers
@@ -17,17 +12,11 @@ namespace WebAPI.Controllers
     public class RoomController : BaseController<Room, RoomVM>
     {
         private readonly IRoomRepository _roomRepository;
-        private readonly IBookingRepository _bookingRepository;
-        private readonly IEmployeeRepository _employeeRepository;
         private readonly IMapper<Room, RoomVM> _mapper;
-        public RoomController(IRoomRepository roomRepository, IMapper<Room, RoomVM> mapper, 
-            IBookingRepository bookingRepository, 
-            IEmployeeRepository employeeRepository) : base (roomRepository, mapper)
+        public RoomController(IRoomRepository roomRepository, IMapper<Room, RoomVM> mapper) : base (roomRepository, mapper)
         {
             _roomRepository = roomRepository;
             _mapper = mapper;
-            _bookingRepository = bookingRepository;
-            _employeeRepository = employeeRepository;
         }
 
         [HttpGet("CurrentlyUsedRooms")]

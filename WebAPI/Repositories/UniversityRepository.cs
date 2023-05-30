@@ -23,7 +23,6 @@ namespace WebAPI.Repositories
                     university.Guid = existingUniversityWithCode.Guid;
 
                     _context.SaveChanges();
-
                 }
                 else
                 {

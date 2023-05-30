@@ -11,6 +11,11 @@ namespace WebAPI.Repositories
     {
         public RoomRepository(BookingManagementDbContext context): base(context){}
 
+        public bool CheckRoomName(string value)
+        {
+            return _context.Rooms.Any(e => e.Name == value);
+        }
+
         public IEnumerable<MasterRoomVM> GetByDate(DateTime dateTime)
         {
             var rooms = GetAll();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Reflection;
 using WebAPI.Context;
 using WebAPI.Contracts;
@@ -14,30 +15,11 @@ namespace WebAPI.Repositories
     {
         public EmployeeRepository(BookingManagementDbContext context) : base(context){}
 
-        public int CreateWithValidate(Employee employee)
-        {
-            try
-            {
-                bool ExistsByEmail = _context.Employees.Any(e => e.Email == employee.Email);
-                if (ExistsByEmail)
-                {
-                    return 1;
-                }
-
-                bool ExistsByPhoneNumber = _context.Employees.Any(e => e.PhoneNumber == employee.PhoneNumber);
-                if (ExistsByPhoneNumber)
-                {
-                    return 2;
-                }
-
-                Create(employee);
-                return 3;
-
-            }
-            catch
-            {
-                return 0;
-            }
+        public bool CheckNIKEmailPhone(string value)
+        {          
+            return _context.Employees.Any(e => e.Email == value || 
+            e.PhoneNumber == value || 
+            e.Nik == value);
         }
 
         public Guid? FindGuidByEmail(string email)
@@ -93,6 +75,12 @@ namespace WebAPI.Repositories
             }
 
             return employeeEducations;
+        }
+
+        public Employee GetByEmail(string email)
+        {
+            var employee = _context.Set<Employee>().FirstOrDefault(e => e.Email == email);
+            return employee;
         }
 
         MasterEmployeeVM? IEmployeeRepository.GetMasterEmployeeByGuid(Guid guid)

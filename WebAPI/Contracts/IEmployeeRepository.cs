@@ -11,8 +11,11 @@ namespace WebAPI.Contracts
 
         MasterEmployeeVM? GetMasterEmployeeByGuid(Guid guid);
 
-        int CreateWithValidate(Employee employee);
         public Guid? FindGuidByEmail(string email);
 
+        bool CheckNIKEmailPhone(string value);
+
+        Employee GetByEmail(string email);
+   
     }
 }

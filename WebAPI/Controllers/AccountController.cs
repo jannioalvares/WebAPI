@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Security.Claims;
 using WebAPI.Contracts;
 using WebAPI.Model;
 using WebAPI.Others;
@@ -18,21 +22,26 @@ namespace WebAPI.Controllers
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IEmailService _emailService;
         private readonly IMapper<Account, AccountVM> _mapper;
-        public AccountController(IAccountRepository accountRepository, 
-            IMapper<Account, AccountVM> mapper, 
-            IEmployeeRepository employeeRepository, 
-            IEmailService emailService) : base(accountRepository, mapper)
+        private readonly ITokenService _tokenService;
+
+        public AccountController(IAccountRepository accountRepository,
+            IMapper<Account, AccountVM> mapper,
+            IEmployeeRepository employeeRepository,
+            IEmailService emailService,
+            ITokenService tokenService) : base(accountRepository, mapper)
         {
             _accountRepository = accountRepository;
             _mapper = mapper;
             _employeeRepository = employeeRepository;
             _emailService = emailService;
+            _tokenService = tokenService;
         }
 
         [HttpPost("Login")]
         public IActionResult Login(LoginVM loginVM)
         {
             var account = _accountRepository.Login(loginVM);
+            var employee = _employeeRepository.GetByEmail(loginVM.Email);
 
             if (account == null)
             {
@@ -54,13 +63,53 @@ namespace WebAPI.Controllers
                 });
             }
 
-            return Ok(new ResponseVM<LoginVM>
+            var claims = new List<Claim>
+            {
+                new(ClaimTypes.NameIdentifier, employee.Nik),
+                new(ClaimTypes.Name, $"{employee.FirstName}{employee.LastName}"),
+                new(ClaimTypes.Email, employee.Email),
+            };
+
+            var roles = _accountRepository.GetRoles(employee.Guid);
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var token = _tokenService.GenerateToken(claims);
+
+            return Ok(new ResponseVM<string>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
-                Message = "Login Success"
+                Message = "Login Success",
+                Data = token
             });
 
+        }
+
+        [HttpGet("GetDataFromToken")]
+        public IActionResult GetDataFromToken(string token)
+        {
+            var data = _tokenService.ExtrackClaimsFromJwt(token);
+
+            if (data.NameIdentifier == null)
+            {
+                return BadRequest(new ResponseVM<string>
+                {
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.BadRequest.ToString(),
+                    Message = "Invalid Token"
+                });
+            }
+
+            return Ok(new ResponseVM<ClaimVM>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Success",
+                Data = data
+            });
         }
 
         [HttpPost("Register")]
@@ -128,7 +177,7 @@ namespace WebAPI.Controllers
                 case 4:
                     return BadRequest(response.Error("OTP expired"));
                 case 5:
-                    return BadRequest(response.Error("Wrong Password No Same"));
+                    return BadRequest(response.Error("Password doesnt match"));
                 default:
                     return BadRequest();
             }
@@ -136,7 +185,7 @@ namespace WebAPI.Controllers
 
         }
 
-        [HttpPost("ForgotPassword" + "{email}")]
+        [HttpPost("ForgotPassword/{email}")]
         public IActionResult UpdateResetPass(String email)
         {
             var response = new ResponseVM<AccountResetPasswordVM>();
@@ -152,13 +201,13 @@ namespace WebAPI.Controllers
             {
                 case 0:
                     return BadRequest();
-                default:                   
+                default:
                     _emailService.SetEmail(email)
                         .SetSubject("Forgot Passowrd")
                         .SetHtmlMessage($"Your OTP is {isUpdated}")
                         .SendEmailAsync();
 
-                    return Ok(response.Success("OTP has been sent to your email"));
+                    return Ok(response.Success("OTP Successfully Sent to Email"));
 
             }
         }
