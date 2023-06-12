@@ -1,0 +1,32 @@
+ul {
+    list-style-type: none;
+}
+
+[class*="col"] {
+    padding: 5rem;
+    text-align: center;
+}
+
+div {
+    padding-top: 100px;
+}
+
+/*table {
+    border-collapse: collapse;
+    width: 1280px;
+    margin: auto;
+}
+
+th{
+    border: 1px solid black;
+    padding: 8px;
+    background-color: hotpink;
+}
+
+td {
+    border: 1px solid black;
+    padding: 8px;
+}*/
+
+
+

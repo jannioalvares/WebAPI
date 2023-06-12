@@ -1,0 +1,202 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    Layout = "_LatihanLayout";
+}
+
+@*<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="main col-md-6" style="background-color: red">
+            <img id="myImage" width="100px" height="100px" class="rounded-pill" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZAW2bITJewNBxfsCzYPwVd28C-jsW8PFX4g&usqp=CAU" alt="valo" style="display: none;">
+            Content 1
+        </div>
+        <ul class="col m-0 p-0">
+            <li class="col" style="background-color: green">Content 2</li>
+            <li class="col" style="background-color: blue">Content 3</li>
+        </ul>
+    </div>
+</div>
+<div id="divbtn" class="d-flex justify-content-center p-2">
+    <button onclick="baris1()" id="btn1" type="button" class="mr-2 btn btn-primary btn-sm">Button 1</button>
+    <button onclick="baris2()" type="button" class="mr-2 btn btn-primary btn-sm">Button 2</button>
+    <button onclick="baris3()" type="button" class="btn btn-primary btn-sm">Button 3</button>
+</div>
+<div class="div-btn">
+    <h1>STAR WARS</h1>
+</div>
+<table class="tb table-striped" id="starwar"></table>*@
+
+<table id="valoTb" class="tb table-striped alert-dark">
+    <tbody id="valo">
+    </tbody>
+</table>
+<div class="modal fade" id="agentModal" tabindex="-1" role="dialog" aria-labelledby="agentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="agentModalLabel"></h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-5">
+                        <img id="agentBg" class="agent-bg" src="" alt="Agent Bg">
+                        <img id="agentImage" class="agent-full-portrait" src="" alt="Agent Image">
+                        <p></p>
+                        <div class="text-center">
+                            <span id="agentRole"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <p style="color: white;" id="agentDesc"></p>
+                        <div id="abilitiesCarousel" class="carousel slide" data-ride="carousel">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<button id="openModalBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#formModal">Employee</button>
+
+<div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="formModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formModalLabel">Add Employee</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="myForm">
+                    <div class="mb-3">
+                        <label for="input1" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="input1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="input2" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="input2">
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputDatetime" class="form-label">Birthdate</label>
+                        <input type="datetime-local" class="form-control" id="inputDatetime" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="radio1" class="form-label">Gender</label>
+                        <div>
+                            <input type="radio" id="radio1" name="radioButton" required>
+                            <label for="radio1">Male</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="radio2" name="radioButton" required>
+                            <label for="radio2">Female</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="inputEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputNumber" class="form-label">Phonenumber</label>
+                        <input type="number" class="form-control" id="inputNumber" required>
+                    </div>                    
+                    <div class="mb-3">
+                        <label for="inputDatetime" class="form-label">Join Date</label>
+                        <input type="datetime-local" class="form-control" id="inputDatetime" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="input4" class="form-label">Degree</label>
+                        <input type="text" class="form-control" id="input4" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="input4" class="form-label">Major</label>
+                        <input type="text" class="form-control" id="input4" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="input5" class="form-label">GPA</label>
+                        <input type="text" class="form-control" id="input5" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="input6" class="form-label">Universities</label>
+                        <input type="text" class="form-control" id="input6" required>
+                    </div>                    
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button id="submitFormBtn" type="button" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@*<div id="agentModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="agentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="agentModalLabel">Agent Details</h5>
+            </div>
+            <div class="modal-body">
+                <div id="agentDetails"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>*@
+
+@*<div class="modal fade" id="weaponModal" tabindex="-1" role="dialog" aria-labelledby="weaponModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="weaponModalLabel">Weapon Details</h5>
+            </div>
+            <div class="modal-body">
+                <img id="weaponImage" src="" alt="Weapon Image" style="max-width: 100%;">
+                <p id="weaponType"></p>
+                <p id="weaponFireRate"></p>
+                <p id="weaponMagazine"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>*@
+
+@*<div class="modal fade" id="weaponModal" tabindex="-1" role="dialog" aria-labelledby="weaponModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="weaponModalLabel"></h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img id="weaponImage" src="" alt="Weapon Image" class="img-fluid">
+                    </div>
+                    <div class="col-md-8">
+                        <p id="weaponType"></p>
+                        <p id="weaponFireRate"></p>
+                        <p id="weaponMagazine"></p>
+                        <div id="chartContainer">
+                         <canvas id="weaponChart"></canvas>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>*@
+
+
