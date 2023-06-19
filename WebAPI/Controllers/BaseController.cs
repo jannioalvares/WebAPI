@@ -10,7 +10,7 @@ namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    //[Authorize(Roles = "Manager, Admin")]
+    /*[Authorize(Roles = "Manager, Admin")]*/
     public class BaseController<TModel, TViewModel> : ControllerBase
     {
         private readonly IGeneralRepository<TModel> _repository;
@@ -29,7 +29,7 @@ namespace WebAPI.Controllers
             var models = _repository.GetAll();
             if (!models.Any())
             {
-                return NotFound(new ResponseVM<TViewModel>
+                return NotFound(new ResponseMessageVM<TViewModel>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -39,7 +39,7 @@ namespace WebAPI.Controllers
 
             var resultConverted = models.Select(_mapper.Map).ToList();
 
-            return Ok(new ResponseVM<List<TViewModel>>
+            return Ok(new ResponseMessageVM<List<TViewModel>>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -54,7 +54,7 @@ namespace WebAPI.Controllers
             var model = _repository.GetByGuid(guid);
             if (model is null)
             {
-                return NotFound(new ResponseVM<TViewModel>
+                return NotFound(new ResponseMessageVM<TViewModel>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -64,7 +64,7 @@ namespace WebAPI.Controllers
 
             var resultConverted = _mapper.Map(model);
 
-            return Ok(new ResponseVM<TViewModel>
+            return Ok(new ResponseMessageVM<TViewModel>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -80,7 +80,7 @@ namespace WebAPI.Controllers
             var result = _repository.Create(model);
             if (result is null)
             {
-                return NotFound(new ResponseVM<TViewModel>
+                return NotFound(new ResponseMessageVM<TViewModel>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -88,7 +88,7 @@ namespace WebAPI.Controllers
                 });
             }
 
-            return Ok(new ResponseVM<TModel>
+            return Ok(new ResponseMessageVM<TModel>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -104,7 +104,7 @@ namespace WebAPI.Controllers
             var isUpdated = _repository.Update(model);
             if (!isUpdated)
             {
-                return NotFound(new ResponseVM<TViewModel>
+                return NotFound(new ResponseMessageVM<TViewModel>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -112,7 +112,7 @@ namespace WebAPI.Controllers
                 });
             }
 
-            return Ok(new ResponseVM<TModel>
+            return Ok(new ResponseMessageVM<TModel>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -126,7 +126,7 @@ namespace WebAPI.Controllers
             var isDeleted = _repository.Delete(guid);
             if (!isDeleted)
             {
-                return NotFound(new ResponseVM<TViewModel>
+                return NotFound(new ResponseMessageVM<TViewModel>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -134,7 +134,7 @@ namespace WebAPI.Controllers
                 });
             }
 
-            return Ok(new ResponseVM<TModel>
+            return Ok(new ResponseMessageVM<TModel>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),

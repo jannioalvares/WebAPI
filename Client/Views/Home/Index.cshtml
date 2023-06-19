@@ -1,7 +1,37 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
-    Layout = "_LatihanLayout";
+    Layout = "_Layout";
+    var jwToken = ViewData["JWToken"];
 }
+@*<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+<div class="text-center">
+    <button onclick="window.location.href='https://localhost:7028/Employee/MasterEmployee/'">MasterEmployee</button>
+    <button onclick="window.location.href='https://localhost:7028/Employee/'">Employee</button>
+    <button onclick="window.location.href='https://localhost:7028/University/'">University</button>
+    <button onclick="window.location.href='https://localhost:7028/Account/Logins'">Login</button>
+    <button onclick="window.location.href='https://localhost:7028/Account/Registers'">Register</button>
+    <button onclick="window.location.href='/Logout'">Logout</button>
+</div>
+<div class="text-center">
+    <p class="jwt-text">JWT</p>
+</div>
+<div class="center-container">
+    <textarea id="jwtToken" readonly class="large-textbox">@jwToken</textarea>
+</div>*@
+
+
+
+  <div class="text-center jedag-jedug-container">
+    <h1 class="display-4 jedag-jedug-heading">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+  </div>
+
+
+
+
 
 @*<div class="container-fluid mt-4">
     <div class="row">
@@ -24,6 +54,12 @@
     <h1>STAR WARS</h1>
 </div>
 <table class="tb table-striped" id="starwar"></table>*@
+
+
+@*EMPLOYEE*@
+@*<div>
+    <h1>EMPLOYEE</h1>
+</div>
 
 <table id="valoTb" class="tb table-striped alert-dark">
     <tbody id="valo">
@@ -58,141 +94,152 @@
         </div>
     </div>
 </div>
-<button id="openModalBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#formModal">Employee</button>
 
 <div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="formModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="formModalLabel">Add Employee</h5>
+                <h5 class="modal-title" id="formModalLabel">Edit Employee</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="myForm">
-                    <div class="mb-3">
+                <div class="container-fluid">
+                    <form class="row" id="myForm">
+                    <div class="col-md-6">
                         <label for="input1" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="input1" required>
+                        <input type="text" class="form-control" id="firstname" required>
+                        <div id="firstNameError" class="invalid-feedback"></div>
                     </div>
-                    <div class="mb-3">
+                    <div class="col-md-6">
                         <label for="input2" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="input2">
+                        <input type="text" class="form-control" id="lastname">
                     </div>
-                    <div class="mb-3">
+                        <div class="col-md-12">
                         <label for="inputDatetime" class="form-label">Birthdate</label>
-                        <input type="datetime-local" class="form-control" id="inputDatetime" required>
+                        <input type="datetime-local" class="form-control" id="birthdate" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="radio1" class="form-label">Gender</label>
-                        <div>
-                            <input type="radio" id="radio1" name="radioButton" required>
-                            <label for="radio1">Male</label>
+                        <div class="col-md-12">
+                        <label class="form-label">Gender</label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="gender" id="female" value="0">
+                            <label class="form-check-label" for="female">Female</label>
                         </div>
-                        <div>
-                            <input type="radio" id="radio2" name="radioButton" required>
-                            <label for="radio2">Female</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="gender" id="male" value="1">
+                            <label class="form-check-label" for="male">Male</label>
                         </div>
                     </div>
-                    <div class="mb-3">
+                        <div class="col-md-12">
                         <label for="inputEmail" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="inputEmail" required>
+                        <input type="email" class="form-control" id="email" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="inputNumber" class="form-label">Phonenumber</label>
-                        <input type="number" class="form-control" id="inputNumber" required>
-                    </div>                    
-                    <div class="mb-3">
-                        <label for="inputDatetime" class="form-label">Join Date</label>
-                        <input type="datetime-local" class="form-control" id="inputDatetime" required>
+                        <div class="col-md-12">
+                        <label for="inputNumber" class="form-label">Phone Number</label>
+                        <input type="number" class="form-control" id="phonenumber" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="input4" class="form-label">Degree</label>
-                        <input type="text" class="form-control" id="input4" required>
+                        <div class="col-md-12">
+                        <label for="inputDatetime" class="form-label">Hiring Date</label>
+                        <input type="datetime-local" class="form-control" id="hiringdate" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="input4" class="form-label">Major</label>
-                        <input type="text" class="form-control" id="input4" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="input5" class="form-label">GPA</label>
-                        <input type="text" class="form-control" id="input5" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="input6" class="form-label">Universities</label>
-                        <input type="text" class="form-control" id="input6" required>
-                    </div>                    
                 </form>
+                <div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="submitFormBtn" type="button" class="btn btn-primary">Submit</button>
+                </div>
+                </div>
             </div>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button id="submitFormBtn" type="button" class="btn btn-primary">Submit</button>
-            </div>
+            
         </div>
     </div>
 </div>
 
 
-
-
-
-@*<div id="agentModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="agentModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="agentModalLabel">Agent Details</h5>
-            </div>
-            <div class="modal-body">
-                <div id="agentDetails"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>*@
-
-@*<div class="modal fade" id="weaponModal" tabindex="-1" role="dialog" aria-labelledby="weaponModalLabel" aria-hidden="true">
+<!-- Delete Modal -->
+<div class="modal" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="weaponModalLabel">Weapon Details</h5>
+                <h5 class="modal-title" id="deleteModalLabel">Delete Employee</h5>
             </div>
             <div class="modal-body">
-                <img id="weaponImage" src="" alt="Weapon Image" style="max-width: 100%;">
-                <p id="weaponType"></p>
-                <p id="weaponFireRate"></p>
-                <p id="weaponMagazine"></p>
+                Are you sure you want to delete this agent?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-danger btn-confirm">Yes</button>
             </div>
         </div>
     </div>
-</div>*@
-
-@*<div class="modal fade" id="weaponModal" tabindex="-1" role="dialog" aria-labelledby="weaponModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
+</div>
+<div class="modal fade" id="employeeModal" tabindex="-1" role="dialog" aria-labelledby="employeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content ">
             <div class="modal-header">
-                <h5 class="modal-title" id="weaponModalLabel"></h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h5 class="modal-title" id="employeeModalTitle">Add Employee</h5>
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-4">
-                        <img id="weaponImage" src="" alt="Weapon Image" class="img-fluid">
-                    </div>
-                    <div class="col-md-8">
-                        <p id="weaponType"></p>
-                        <p id="weaponFireRate"></p>
-                        <p id="weaponMagazine"></p>
-                        <div id="chartContainer">
-                         <canvas id="weaponChart"></canvas>
+            <div class="modal-body" id="employeeModalBody">
+                <div class="container-fluid">
+                    <form class="row" onsubmit="AddEmployee()">
+                        <div class="col-md-12">
+                            <label class="form-label ">NIK</label>
+                            <input type="text" class="form-control" id="employee-nik" name="employee-nik" maxlength="6" required />
                         </div>
-                    </div>
-                    
+                        <div class="col-md-6">
+                            <label class="form-label ">First Name</label>
+                            <input type="text" class="form-control" id="employee-fname" name="employee-fname" required />
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                            <div class="invalid-feedback">
+                                Please input your first name.
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label ">Last Name</label>
+                            <input type="text" class="form-control" id="employee-lname" name="employee-lname"/>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label ">Birthdate</label>
+                            <input type="datetime-local" class="form-control" id="employee-bdate" name="employee-bdate" />
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Gender</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="employee-gender" id="employee-gender-f">
+                                <label class="form-check-label " for="employee-gender-f">
+                                    Female
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="employee-gender" id="employee-gender-m">
+                                <label class="form-check-label text" for="employee-gender-m">
+                                    Male
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label ">Hiring Date</label>
+                            <input type="datetime-local" class="form-control" id="employee-hdate" name="employee-hdate" />
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                            <div class="invalid-feedback">
+                                Please input your first name.
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label ">Email</label>
+                            <input type="email" class="form-control" id="employee-email" name="employee-email" required />
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label ">Phone Number</label>
+                            <input type="text" class="form-control" id="employee-pnumber" name="employee-pnumber" required />
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-primary" type="submit">Submit form</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

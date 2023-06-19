@@ -37,7 +37,7 @@ namespace WebAPI.Controllers
             _tokenService = tokenService;
         }
 
-        [AllowAnonymous]
+        /*[AllowAnonymous]*/
         [HttpPost("Login")]
         public IActionResult Login(LoginVM loginVM)
         {
@@ -46,7 +46,7 @@ namespace WebAPI.Controllers
 
             if (account == null)
             {
-                return NotFound(new ResponseVM<LoginVM>
+                return NotFound(new ResponseMessageVM<LoginVM>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -56,11 +56,11 @@ namespace WebAPI.Controllers
 
             if (account.Password != loginVM.Password)
             {
-                return BadRequest(new ResponseVM<LoginVM>
+                return BadRequest(new ResponseMessageVM<LoginVM>
                 {
                     Code = StatusCodes.Status400BadRequest,
                     Status = HttpStatusCode.BadRequest.ToString(),
-                    Message = "Password Invalid"
+                    Message = "Invalid Password"
                 });
             }
 
@@ -79,7 +79,7 @@ namespace WebAPI.Controllers
 
             var token = _tokenService.GenerateToken(claims);
 
-            return Ok(new ResponseVM<string>
+            return Ok(new ResponseMessageVM<string>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -97,7 +97,7 @@ namespace WebAPI.Controllers
 
             if (data.NameIdentifier == null)
             {
-                return BadRequest(new ResponseVM<string>
+                return BadRequest(new ResponseMessageVM<string>
                 {
                     Code = StatusCodes.Status400BadRequest,
                     Status = HttpStatusCode.BadRequest.ToString(),
@@ -105,7 +105,7 @@ namespace WebAPI.Controllers
                 });
             }
 
-            return Ok(new ResponseVM<ClaimVM>
+            return Ok(new ResponseMessageVM<ClaimVM>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -122,28 +122,28 @@ namespace WebAPI.Controllers
             switch (result)
             {
                 case 0:
-                    return BadRequest(new ResponseVM<AccountVM>
+                    return BadRequest(new ResponseMessageVM<AccountVM>
                     {
                         Code = StatusCodes.Status400BadRequest,
                         Status = HttpStatusCode.BadRequest.ToString(),
                         Message = "Registration failed"
                     });
                 case 1:
-                    return BadRequest(new ResponseVM<AccountVM>
+                    return BadRequest(new ResponseMessageVM<AccountVM>
                     {
                         Code = StatusCodes.Status400BadRequest,
                         Status = HttpStatusCode.BadRequest.ToString(),
                         Message = "Email already exists"
                     });
                 case 2:
-                    return BadRequest(new ResponseVM<AccountVM>
+                    return BadRequest(new ResponseMessageVM<AccountVM>
                     {
                         Code = StatusCodes.Status400BadRequest,
                         Status = HttpStatusCode.BadRequest.ToString(),
                         Message = "Phone number already exists"
                     });
                 case 3:
-                    return Ok(new ResponseVM<AccountVM>
+                    return Ok(new ResponseMessageVM<AccountVM>
                     {
                         Code = StatusCodes.Status200OK,
                         Status = HttpStatusCode.OK.ToString(),
@@ -151,7 +151,7 @@ namespace WebAPI.Controllers
                     });
             }
 
-            return Ok(new ResponseVM<AccountVM>
+            return Ok(new ResponseMessageVM<AccountVM>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -165,7 +165,7 @@ namespace WebAPI.Controllers
         public IActionResult ChangePassword(ChangePasswordVM changePasswordVM)
         {
             // Cek apakah email dan OTP valid
-            var response = new ResponseVM<ChangePasswordVM>();
+            var response = new ResponseMessageVM<ChangePasswordVM>();
             var account = _employeeRepository.FindGuidByEmail(changePasswordVM.Email);
             var changePass = _accountRepository.ChangePasswordAccount(account, changePasswordVM);
             switch (changePass)
@@ -193,7 +193,7 @@ namespace WebAPI.Controllers
         [HttpPost("ForgotPassword/{email}")]
         public IActionResult UpdateResetPass(String email)
         {
-            var response = new ResponseVM<AccountResetPasswordVM>();
+            var response = new ResponseMessageVM<AccountResetPasswordVM>();
             var getGuid = _employeeRepository.FindGuidByEmail(email);
             if (getGuid == null)
             {

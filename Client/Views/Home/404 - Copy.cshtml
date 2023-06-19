@@ -1,0 +1,108 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>404 - NotFound</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,700" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="css/style.css" />
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        #notfound {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 70vh;
+        }
+
+        .notfound {
+            text-align: center;
+        }
+
+        .notfound-404 {
+            margin-bottom: 30px;
+        }
+
+            .notfound-404 h1 {
+                font-size: 80px;
+                margin: 0;
+            }
+
+            .notfound-404 img {
+                width: 300px;
+                max-width: 100%;
+                height: auto;
+            }
+
+        .notfound h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .notfound p {
+            font-size: 16px;
+            margin-top: 15px;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .notfound a {
+            display: inline-block;
+            text-decoration: none;
+            background-color: #0088cc;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+            .notfound a:hover {
+                background-color: #006699;
+            }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="notfound">
+        <div class="notfound">
+            <div class="notfound-404">
+                <h1>404: Not Found</h1>
+                @*<img src="https://drive.google.com/uc?export=view&id=1RT1yKnlkCgLU8z3bLLiQq7Z7Vjx4AGHe" alt="401 Error">*@
+            </div>
+            <h2>NOT FOUND</h2>
+            <p>Redirecting to the login page in <span id="countdown">5</span> seconds...</p>
+            <a href="javascript:history.go(-1)">Click here if you are not automatically redirected.</a>
+        </div>
+    </div>
+
+    <script>
+        let timer = 5;
+        setInterval(() => {
+            document.getElementById('countdown').textContent = timer;
+            timer--;
+            if (timer === 0) {
+                location.href = "javascript:history.go(-1)";
+            }
+        }, 1000);
+    </script>
+</body>
+
+</html>

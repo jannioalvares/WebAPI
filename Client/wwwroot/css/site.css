@@ -16,3 +16,27 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.text-center{
+    margin-top: 10px;
+}
+
+.center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.large-textbox {
+    width: 700px;
+    height: 300px;
+    font-size: 18px;
+    padding: 10px;
+}
+
+.jwt-text {
+    font-size: 24px; /* Adjust the font size as needed */
+    margin-bottom: 10px; /* Adjust the margin as needed */
+    text-align: center;
+}

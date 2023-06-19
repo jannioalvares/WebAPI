@@ -26,7 +26,7 @@ namespace WebAPI.ViewModels.Accounts
         [Required(ErrorMessage = "Degree is required")]
         public string Degree { get; set; }
 
-        [Range(0,4, ErrorMessage = "GPA must between 0-4 ")]
+        [Range(0.0, 4.0, ErrorMessage = "GPA must between 0-4 ")]
         public float GPA { get; set; }
         [Required(ErrorMessage = "UniversityCode is required")]
         public string UniversityCode { get; set; }

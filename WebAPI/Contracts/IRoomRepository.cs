@@ -9,7 +9,9 @@ namespace WebAPI.Contracts
         IEnumerable<MasterRoomVM> GetByDate(DateTime dateTime);
         IEnumerable<RoomUsedVM> GetCurrentlyUsedRooms();
 
-        IEnumerable<EmptyRoomVM> GetRoomByDate();
+        IEnumerable<EmptyRoomVM> GetAvailableRoom();
+        public string GetRoomStatus(Booking booking, DateTime dateTime);
+
 
     }
 }

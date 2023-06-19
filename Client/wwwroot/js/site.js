@@ -1,4 +1,4 @@
-﻿let query1 = document.querySelector(".main:first-child");
+﻿/*let query1 = document.querySelector(".main:first-child");
 let query2 = document.querySelector("ul li:nth-child(1)");
 let query3 = document.querySelector("ul li:nth-child(2)");
 
@@ -29,5 +29,5 @@ btn1.addEventListener("dblclick", (event) => {
     query3.innerHTML = "NAH BERUBAH LAGI KAN";
     query1.style.backgroundColor = "grey";
     image.style.display = "block";
-});
+});*/
 

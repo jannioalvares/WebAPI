@@ -2,12 +2,12 @@ ul {
     list-style-type: none;
 }
 
-[class*="col"] {
+/*[class*="col"] {
     padding-top: 10px;
     padding-bottom: 10px;
-    margin: auto;
+    margin: auto;*/
     /*text-align: center;*/
-}
+/*}*/
 
 div.div-btn {
     padding-top: 100px;
@@ -104,6 +104,7 @@ td {
 
 .modal-body {
     background-color: #006666;
+    color: white;
 }
 
 .modal-content {
@@ -129,21 +130,33 @@ td {
     border-spacing: 0;
 }
 
-/*select {
-    width: 300px;*/ /* Adjust the width to your desired value */
-    /*height: 40px;*/ /* Adjust the height to your desired value */
-/*}
 
-.select.form-select.form-select-sm{
-    width: 300px;
-}*/
+input[type="text"], input[type="email"], input[type="tel"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.form-row {
+    display: flex;
+    gap: 10px;
+}
 
-/*th.sorting.sorting_asc {
-    max-width: 30px;*/ /* Ubah nilai ini sesuai dengan tinggi yang diinginkan */
-    /*overflow-y: auto;
-}*/
+.form-row .form-group {
+    flex: 1;
+}
 
-/*div.col-sm-12{
-    padding-left: 100px;
-    padding-right: 100px;
-}*/
+#deleteModal .modal-footer {
+    background-color: #006666;
+}
+
+.custom-datatable {
+    width: 100%;
+    height: 400px;
+}
+
+body{
+    margin: 20px;
+    padding: 20px;
+}
+

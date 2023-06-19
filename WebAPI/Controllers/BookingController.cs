@@ -29,7 +29,7 @@ namespace WebAPI.Controllers
         [HttpGet("BookingLength")]
         public IActionResult GetDuration()
         {
-            var response = new ResponseVM<IEnumerable<BookingDurationVM>>();
+            var response = new ResponseMessageVM<IEnumerable<BookingDurationVM>>();
             var bookingLengths = _bookingRepository.GetBookingDuration();
             if (!bookingLengths.Any())
             {
@@ -43,7 +43,7 @@ namespace WebAPI.Controllers
         [HttpGet("BookingDetail")]
         public IActionResult GetAllBookingDetail()
         {
-            var response = new ResponseVM<IEnumerable<BookingDetailVM>>();
+            var response = new ResponseMessageVM<IEnumerable<BookingDetailVM>>();
             try
             {
                 var results = _bookingRepository.GetAllBookingDetail();
@@ -58,7 +58,7 @@ namespace WebAPI.Controllers
         [HttpGet("BookingDetail/{guid}")]
         public IActionResult GetDetailByGuid(Guid guid)
         {
-            var response = new ResponseVM<BookingDetailVM>();
+            var response = new ResponseMessageVM<BookingDetailVM>();
             try
             {
                 var bookingDetailVM = _bookingRepository.GetBookingDetailByGuid(guid);

@@ -15,7 +15,7 @@ using WebAPI.ViewModels.Universities;
 namespace WebAPI.Controllers
 {
     [ApiController]
-    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}, {nameof(RoleLevel.Manager)}")]
+    /*[Authorize(Roles = $"{nameof(RoleLevel.Admin)}, {nameof(RoleLevel.Manager)}")]*/
     [Route("api/[controller]")]
     public class EmployeeController : BaseController<Employee, EmployeeVM>
     {
@@ -34,7 +34,7 @@ namespace WebAPI.Controllers
             var masterEmployees = _employeeRepository.GetAllMasterEmployee();
             if (!masterEmployees.Any())
             {
-                return NotFound(new ResponseVM<string>
+                return NotFound(new ResponseMessageVM<string>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -42,7 +42,7 @@ namespace WebAPI.Controllers
                 });
             }
 
-            return Ok(new ResponseVM<IEnumerable<MasterEmployeeVM>>
+            return Ok(new ResponseMessageVM<IEnumerable<MasterEmployeeVM>>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -57,7 +57,7 @@ namespace WebAPI.Controllers
             var masterEmployees = _employeeRepository.GetMasterEmployeeByGuid(guid);
             if (masterEmployees is null)
             {
-                return NotFound(new ResponseVM<string>
+                return NotFound(new ResponseMessageVM<string>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -65,7 +65,7 @@ namespace WebAPI.Controllers
                 });
             }
 
-            return Ok(new ResponseVM<MasterEmployeeVM>
+            return Ok(new ResponseMessageVM<MasterEmployeeVM>
             {
                 Code = 200,
                 Status = "OK",

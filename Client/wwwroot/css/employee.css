@@ -1,0 +1,159 @@
+ul {
+    list-style-type: none;
+}
+
+/*[class*="col"] {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin: auto;*/
+    /*text-align: center;*/
+/*}*/
+
+div.div-btn {
+    padding-top: 100px;
+}
+
+h1 {
+    text-align: center;
+}
+
+/*table {
+    border-collapse: collapse;
+    width: 800px;
+    margin: auto
+}
+
+th {
+    border: 1px solid black;
+    padding: 8px;
+    background-color: Black;
+    color: white;
+}
+
+td {
+    padding: 8px;
+    border: 1px solid black;
+}*/
+
+
+#agentModal .modal-body img {
+    width: 100%;
+    height: auto;
+}
+
+#tb img {
+    width: 10%;
+    height: auto;
+}
+
+.cnt {
+    padding-bottom: 20px;
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#abilitiesCarousel .carousel-inner {
+    padding-top: 10px;
+}
+
+#abilitiesCarousel .carousel-item h6 {
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#abilitiesCarousel .carousel-item p {
+    font-size: 14px;
+}
+
+#abilitiesCarousel .carousel-item img {
+    width: 20%;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#abilitiesCarousel {
+    background-color: #00b2b2;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+/*.carousel-inner {
+    display: grid;
+    grid-template-rows: auto auto;
+    align-items: center;
+    justify-content: center;
+}*/
+
+.agent-full-portrait {
+    position: relative;
+}
+
+.modal-header {
+    background-color: #004c4c;
+    color: white;
+}
+
+.modal-body {
+    background-color: #006666;
+    color: white;
+}
+
+.modal-content {
+    background-color: #004c4c;
+}
+
+#agentModal #agentBg {
+    width: 300px;
+    height: 300px;
+    position: absolute;
+    opacity: 0.4; /* Set the desired opacity value between 0 and 1 */
+}
+
+#agentRole {
+    position: relative;
+    margin: auto;
+}
+
+
+#valo {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/*select {
+    width: 300px;*/ /* Adjust the width to your desired value */
+    /*height: 40px;*/ /* Adjust the height to your desired value */
+/*}
+
+.select.form-select.form-select-sm{
+    width: 300px;
+}*/
+
+/*th.sorting.sorting_asc {
+    max-width: 30px;*/ /* Ubah nilai ini sesuai dengan tinggi yang diinginkan */
+    /*overflow-y: auto;
+}*/
+
+/*div.col-sm-12{
+    padding-left: 100px;
+    padding-right: 100px;
+}*/
+
+input[type="text"], input[type="email"], input[type="tel"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+

@@ -25,7 +25,7 @@ namespace WebAPI.Controllers
             var room = _roomRepository.GetCurrentlyUsedRooms();
             if (room is null)
             {
-                return NotFound(new ResponseVM<string>
+                return NotFound(new ResponseMessageVM<string>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -33,7 +33,7 @@ namespace WebAPI.Controllers
                 });
             }
 
-            return Ok(new ResponseVM<IEnumerable<RoomUsedVM>>
+            return Ok(new ResponseMessageVM<IEnumerable<RoomUsedVM>>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -48,7 +48,7 @@ namespace WebAPI.Controllers
             var room = _roomRepository.GetByDate(dateTime);
             if (room is null)
             {
-                return NotFound(new ResponseVM<string>
+                return NotFound(new ResponseMessageVM<string>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -56,7 +56,7 @@ namespace WebAPI.Controllers
                 });
             }
 
-            return Ok(new ResponseVM<IEnumerable<MasterRoomVM>>
+            return Ok(new ResponseMessageVM<IEnumerable<MasterRoomVM>>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -65,23 +65,38 @@ namespace WebAPI.Controllers
             });
         }
 
-        [HttpGet("RoomAvailable")]
-        public IActionResult GetRoomByDate()
+        [HttpGet("AvailableRoom")]
+        public IActionResult GetAvailableRoom()
         {
-            var response = new ResponseVM<IEnumerable<EmptyRoomVM>>();
             try
             {
-                var room = _roomRepository.GetRoomByDate();
+                var room = _roomRepository.GetAvailableRoom();
                 if (room is null)
                 {
-                    return Ok(response.NotFound("Available Room Not Found"));
+                    return NotFound(new ResponseMessageVM<EmptyRoomVM>
+                    {
+                        Code = StatusCodes.Status404NotFound,
+                        Status = HttpStatusCode.NotFound.ToString(),
+                        Message = "AvailableRoom Not Found"
+                    });
                 }
 
-                return Ok(response.Success(room, "Available Room Found"));
+                return Ok(new ResponseMessageVM<IEnumerable<EmptyRoomVM>>
+                {
+                    Code = StatusCodes.Status200OK,
+                    Status = HttpStatusCode.OK.ToString(),
+                    Message = "AvailableRoom Found",
+                    Data = room
+                });
             }
             catch
             {
-                return Ok(response.Error);
+                return Ok(new ResponseMessageVM<EmptyRoomVM>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Terjadi Error"
+                });
             }
         }
     }

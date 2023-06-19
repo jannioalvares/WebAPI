@@ -25,7 +25,7 @@ namespace WebAPI.Controllers
         [HttpGet("WithEducation")]
         public IActionResult GetAllWithEducation()
         {
-            var response = new ResponseVM<IEnumerable<UniversityEducationVM>>();
+            var response = new ResponseMessageVM<IEnumerable<UniversityEducationVM>>();
             var univEdu = _universityRepository.GetUniversityEducation();
             if (!univEdu.Any())
             {

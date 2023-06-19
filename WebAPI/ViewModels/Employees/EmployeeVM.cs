@@ -7,7 +7,7 @@ namespace WebAPI.ViewModels.Employees
     public class EmployeeVM
     {
         public Guid? Guid { get; set; }
-        [NIKEmailPhoneValidation(nameof(Nik))]
+        /*[NIKEmailPhoneValidation(nameof(Nik))]*/
         public string Nik { get; set; }
         public string FirstName { get; set; }
         public string? LastName { get; set; }
